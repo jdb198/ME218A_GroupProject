@@ -15,6 +15,11 @@
 #include "ES_Framework.h"
 #include "ES_Port.h"
 
+#include <xc.h>
+
+#include "PIC32_SPI_HAL.h"
+#include <string.h>
+
 
 void main(void)
 {
@@ -22,6 +27,20 @@ void main(void)
 
   _HW_PIC32Init(); // basic PIC hardware init
   // Your hardware initialization function calls go here
+  SPISetup_BasicConfig(SPI_SPI1);
+  SPISetup_SetLeader(SPI_SPI1, SPI_SMP_MID); 
+  SPISetup_MapSSOutput(SPI_SPI1, SPI_RPA0); 
+  SPISetup_MapSDOutput(SPI_SPI1, SPI_RPA1);
+  SPISetEnhancedBuffer(SPI_SPI1, 1);
+  SPISetup_SetBitTime(SPI_SPI1, 10000);
+  SPISetup_SetActiveEdge(SPI_SPI1, SPI_CLK_LO); 
+  SPISetup_SetClockIdleState(SPI_SPI1, SPI_CLK_HI);// changed from high
+  SPISetup_SetXferWidth(SPI_SPI1, SPI_16BIT);
+  SPI1STATbits.SPIROV = 0;
+  SPISetup_EnableSPI(SPI_SPI1);
+  SPI1BUF; //reset the buffer 
+    
+  while (false == DM_TakeInitDisplayStep()){}
 
 
   // now initialize the Events and Services Framework and start it running
