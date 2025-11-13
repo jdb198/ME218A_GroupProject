@@ -37,8 +37,8 @@
 /*---------------------------- Module Variables ---------------------------*/
 // everybody needs a state variable, you may need others as well.
 // type of state variable should match htat of enum in header file
-static TemplateState_t CurrentState;
-static TemplateState_t  NextState;
+static GhostHuntFSM_t CurrentState;
+static GhostHuntFSM_t  NextState;
 
 #define ONE_SEC 1000
 #define HALF_SEC (ONE_SEC / 2)
@@ -176,6 +176,16 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
         } else if (ThisEvent.EventParam == 'p') {
             //this represents the power up button being shot
             DB_printf("You hit the power up button \n");
+            //check for enough points hit in a row. 
+            ThisEvent.EventType = ES_CHECK_FOR_POWER_UP; 
+            
+            // ok the way to do this is to post to the IR Sensor, see if 5 compltete points have been hit 
+            // if five have been hit. save param as double points. 
+            PostPowerUpService(ThisEvent);
+                    
+            // post to points service the check for points. If return enough
+            // points in param, then add double points 
+            
             // post to power up service (check for enough points and go to points)
         }
     }

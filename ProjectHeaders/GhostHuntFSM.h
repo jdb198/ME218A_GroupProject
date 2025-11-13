@@ -18,14 +18,14 @@ typedef enum
 {
   WaitForInput, UnlockWaiting, _1UnlockPress,
   _2UnlockPresses, Locked, InitGame
-}TemplateState_t;
+}GhostHuntFSM_t;
 
 // Public Function Prototypes
 
 bool InitGhostHuntFSM(uint8_t Priority);
 bool PostGhostHuntFSM(ES_Event_t ThisEvent);
 ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent);
-TemplateState_t QueryGhostHuntFSM(void);
+GhostHuntFSM_t QueryGhostHuntFSM(void);
 
 #endif /* FSMTemplate_H */
 
