@@ -162,29 +162,29 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
     }
     break;
 
-    case WaitForInput:        // If current state is state one
-    {
-        ThisEvent.EventType = ES_NEW_KEY; 
-        if (ThisEvent.EventParam == 's'){
-            // example of someone taking a shot. 
-            DB_printf("You took a shot \n"); 
-            ThisEvent.EventType = ES_SHOT_FIRED;
-            PostShotFiredService(ThisEvent); 
-            //post to shot service to determine if missed or made
-        } else if (ThisEvent.EventParam == 'a') {
-            //This represents an audible sound being made 
-            DB_printf("You made a sound and scared the ghost \n");
-            PostAudioService(ThisEvent);
-            ThisEvent.EventType = ES_MOVE_SERVOS;
-            PostMoveServosService(ThisEvent);
-            // post to points and subtract 5
-        } else if (ThisEvent.EventParam == 'p') {
-            //this represents the power up button being shot
-            DB_printf("You hit the power up button \n");
-            //check for enough points hit in a row. 
-        }
-    }
-    break;
+//    case WaitForInput:        // If current state is state one
+//    {
+//        ThisEvent.EventType = ES_NEW_KEY; 
+//        if (ThisEvent.EventParam == 's'){
+//            // example of someone taking a shot. 
+//            DB_printf("You took a shot \n"); 
+//            ThisEvent.EventType = ES_SHOT_FIRED;
+//            PostShotFiredService(ThisEvent); 
+//            //post to shot service to determine if missed or made
+//        } else if (ThisEvent.EventParam == 'a') {
+//            //This represents an audible sound being made 
+//            DB_printf("You made a sound and scared the ghost \n");
+//            PostAudioService(ThisEvent);
+//            ThisEvent.EventType = ES_MOVE_SERVOS;
+//            PostMoveServosService(ThisEvent);
+//            // post to points and subtract 5
+//        } else if (ThisEvent.EventParam == 'p') {
+//            //this represents the power up button being shot
+//            DB_printf("You hit the power up button \n");
+//            //check for enough points hit in a row. 
+//        }
+//    }
+//    break;
     
     
     // repeat state pattern as required for other states
