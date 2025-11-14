@@ -174,6 +174,9 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
         } else if (ThisEvent.EventParam == 'a') {
             //This represents an audible sound being made 
             DB_printf("You made a sound and scared the ghost \n");
+            PostAudioService(ThisEvent);
+            ThisEvent.EventType = ES_MOVE_SERVOS;
+            PostMoveServosService(ThisEvent);
             // post to points and subtract 5
         } else if (ThisEvent.EventParam == 'p') {
             //this represents the power up button being shot

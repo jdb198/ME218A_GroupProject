@@ -141,7 +141,39 @@ ES_Event_t RunPointsService(ES_Event_t ThisEvent)
       DB_printf("Total Points %d \n", TotalPoints);
       /* ADD IN A POST TO THE DISPLAY CALL TO SHOW POINTS*/
       
-  }  else if (ThisEvent.EventType == ES_CHECK_FOR_POWER_UP){
+  } else if (ThisEvent.EventType == ES_SUBTRACT_1){
+    if(TotalPoints == 0){
+          TotalPoints = 0; 
+      } else if (TotalPoints - 1 < 0){
+          TotalPoints = 0; 
+      } else {
+          TotalPoints = TotalPoints - 1;
+      }
+      DB_printf(" Minus 1 Total Points %d \n", TotalPoints);
+      /* ADD IN A POST TO THE DISPLAY CALL TO SHOW POINTS*/
+  } else if (ThisEvent.EventType == ES_SUBTRACT_2){
+    if(TotalPoints == 0){
+          TotalPoints = 0; 
+      } else if (TotalPoints - 2 < 0){
+          TotalPoints = 0; 
+      } else {
+          TotalPoints = TotalPoints - 2;
+      }
+      DB_printf(" Minus 2 Total Points %d \n", TotalPoints);
+      /* ADD IN A POST TO THE DISPLAY CALL TO SHOW POINTS*/
+  } else if (ThisEvent.EventType == ES_SUBTRACT_3){
+    if(TotalPoints == 0){
+          TotalPoints = 0; 
+      } else if (TotalPoints - 3 < 0){
+          TotalPoints = 0; 
+      } else {
+          TotalPoints = TotalPoints - 3;
+      }
+      DB_printf(" Minus 3 Total Points %d \n", TotalPoints);
+      /* ADD IN A POST TO THE DISPLAY CALL TO SHOW POINTS*/
+  }
+
+    else if (ThisEvent.EventType == ES_CHECK_FOR_POWER_UP){
       CheckPowerUpButton();
   }
   /********************************************

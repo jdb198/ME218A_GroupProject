@@ -96,11 +96,11 @@
 // These are the definitions for Service 4
 #if NUM_SERVICES > 4
 // the header file with the public function prototypes
-#define SERV_4_HEADER "TestHarnessService4.h"
+#define SERV_4_HEADER "AudioService.h"
 // the name of the Init function
-#define SERV_4_INIT InitTestHarnessService4
+#define SERV_4_INIT InitAudioService
 // the name of the run function
-#define SERV_4_RUN RunTestHarnessService4
+#define SERV_4_RUN RunAudioService
 // How big should this services Queue be?
 #define SERV_4_QUEUE_SIZE 3
 #endif
@@ -265,7 +265,10 @@ typedef enum
   ES_SUBTRACT_POINTS, 
   ES_ADD_POINTS, 
   ES_CHECK_FOR_POWER_UP, 
-  ES_SHOT_FIRED
+  ES_SHOT_FIRED,
+  ES_SUBTRACT_3,
+  ES_SUBTRACT_2,
+  ES_SUBTRACT_1
 }ES_EventType_t;
 
 /****************************************************************************/
