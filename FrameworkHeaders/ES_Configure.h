@@ -268,7 +268,9 @@ typedef enum
   ES_SHOT_FIRED,
   ES_SUBTRACT_3,
   ES_SUBTRACT_2,
-  ES_SUBTRACT_1
+  ES_SUBTRACT_1, 
+  ES_POWER_UP, 
+  ES_NO_POWER_UP
 }ES_EventType_t;
 
 /****************************************************************************/
@@ -303,7 +305,8 @@ typedef enum
 
 /****************************************************************************/
 // This is the list of event checking functions
-#define EVENT_CHECK_LIST Check4Keystroke
+#define EVENT_CHECK_LIST Check4Keystroke, Check4PowerUp //InitPowerUpButton, 
+//InitShootButton,InitIRReciever, InitMicrophone, InitServos
 
 /****************************************************************************/
 // These are the definitions for the post functions to be executed when the

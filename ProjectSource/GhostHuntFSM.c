@@ -76,6 +76,19 @@ bool InitGhostHuntFSM(uint8_t Priority)
  
   clrScrn();
   
+  //initialize all inputs and outputs
+  ANSELA = 0; 
+  ANSELB = 0; 
+  
+//  InitServos();
+//  InitShootButton();
+//  InitIREmitter(); 
+  InitPowerUpButton(); 
+//  InitIRReciever(); 
+//  InitMicrophone(); 
+  
+  uint32_t LastPowerUpState = 0;
+    
   CurrentState = InitGame;
   // post the initial transition event
   ThisEvent.EventType = ES_INIT;
@@ -135,35 +148,49 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
   
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
   NextState = CurrentState;
+  
 
-  switch (CurrentState)
+
+  switch (ThisEvent.EventType)
   {
-      case InitGame: // If current state is initial Psedudo State
+      case ES_INIT: // If current state is initial Psedudo State
     {
-      if (ThisEvent.EventType == ES_INIT)    // only respond to ES_Init
-      {
-        // Begining of the game, Print welcome and begin overall game timer
-          DB_printf("WELCOME \n"); 
-//          if(true == ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC)){
-//              // this represents the game being over
-//              DB_printf("GAMEOVER /n");
-//              // post to reset game
-//          }
-//          if (true == ES_Timer_InitTimer(SERVICE0_TIMER, FIVE_SEC)) {
-//              // this is the timer for the ghost to mose every five seconds 
-//              DB_printf("5 second timer reached - GHOST MOVE");
-//              //post to ghost movement service
-//              
-//          }
-        
-      }
-      NextState = WaitForInput;
+        DB_printf("WELCOME \n");
+//      if (ThisEvent.EventType == ES_INIT)    // only respond to ES_Init
+//      {
+//        // Begining of the game, Print welcome and begin overall game timer
+//          DB_printf("WELCOME \n"); 
+//        
+//      }
+      NextState = ES_POWER_UP;
       DB_printf("You are waiting for an input \n");
     }
     break;
-
-//    case WaitForInput:        // If current state is state one
+    
+//    switch (CurrentState)
+//  {
+//      case InitGame: // If current state is initial Psedudo State
 //    {
+//      if (ThisEvent.EventType == ES_INIT)    // only respond to ES_Init
+//      {
+//        // Begining of the game, Print welcome and begin overall game timer
+//          DB_printf("WELCOME \n"); 
+//        
+//      }
+//      NextState = WaitForInput;
+//      DB_printf("You are waiting for an input \n");
+//    }
+//    break;
+    
+    case ES_POWER_UP:        // If current state is state one
+    {
+        DB_printf("You hit the Power up Button \n");
+        break;
+//        if (ThisEvent.EventType  == ES_POWER_UP){
+//            if (ThisEvent.EventParam ==1){
+//                DB_printf("You hit the powerup button \n"); 
+//            }
+//        }
 //        ThisEvent.EventType = ES_NEW_KEY; 
 //        if (ThisEvent.EventParam == 's'){
 //            // example of someone taking a shot. 
@@ -183,8 +210,9 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
 //            DB_printf("You hit the power up button \n");
 //            //check for enough points hit in a row. 
 //        }
-//    }
-//    break;
+    }
+    break;
+    
     
     
     // repeat state pattern as required for other states
@@ -221,4 +249,11 @@ GhostHuntFSM_t QueryGhostHuntFSM(void)
 /***************************************************************************
  private functions
  ***************************************************************************/
+
+void InitPowerUpButton(void) 
+{
+  TRISAbits.TRISA3 = 1;   // make RA3 a digital input (power up button)
+  
+  uint32_t LastPowerUpState = PORTAbits.RA3;
+}
 

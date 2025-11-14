@@ -119,3 +119,78 @@ bool Check4Keystroke(void)
   return false;
 }
 
+bool Check4PowerUp(void) 
+{
+    bool ReturnVal = false; 
+    ES_Event_t ThisEvent;
+    uint32_t CurrentPowerUpState = PORTAbits.RA3;
+    uint32_t LastPowerUpState = 0; 
+    if (CurrentPowerUpState != LastPowerUpState) {
+        ThisEvent.EventType = ES_POWER_UP;
+        ThisEvent.EventParam = PORTAbits.RA3;
+        PostGhostHuntFSM(ThisEvent); 
+        ReturnVal = true;
+    }
+    CurrentPowerUpState = LastPowerUpState; 
+    return ReturnVal;
+}
+
+//void InitShootButton(void)
+//{
+//      // set up shooting button 
+//  TRISBbits.TRISB2 = 1; // set as input 
+//  
+//  
+//  uint32_t ShootButtonLastState = PORTBbits.RB2;
+//  DB_printf("Shoot button initialized \n");
+//}
+//
+//void InitIRReciever(void)
+//{
+//    //set up IR Reciever 
+//    TRISAbits.TRISA4 = 1;   // make RA4 a digital input (IR receiver)
+//    uint32_t LastIRReceived = PORTAbits.RA4;
+//    DB_printf("IR receiver initialized \n");
+//  
+//}
+
+//void InitIREmitter(void)
+//{
+//      // set up IR Emitter
+//
+//  TRISAbits.TRISA2 = 0; // set as input 
+//  
+//  uint32_t LastIREmitted = PORTAbits.RA2;
+////  DB_printf("IR Emitter initialized \n");
+//  
+//}
+
+//void InitMicrophone(void)
+//{
+// TRISBbits.TRISB13 = 1;   // make RB13 an input (microphone)
+// ANSELBbits.ANSB13 = 1;   // make RB13 an analog input
+// 
+// //    /* initialize AD for microphone */
+//    AD1CON1 = 0;
+//    AD1CON1bits.SSRC = 0b111;
+//    AD1CON1bits.FORM = 0;       // 16-bit integer result
+//    AD1CON2 = 0;
+//    AD1CON3 = 0x1F02;
+//    AD1CHSbits.CH0SA = 11;    
+//    AD1CON1bits.ADON = 1;
+//  
+//  uint32_t LastMicrophoneInput = PORTBbits.RB13;
+////  DB_printf("Mic initialized \n");
+//}
+
+
+
+
+//void InitServos(void)
+//{
+//    TRISBbits.TRISB3 = 0;
+//    LATBbits.LATB3 = 1;
+//    TRISBbits.TRISB8 = 0;
+//    LATBbits.LATB8 = 1; 
+////    DB_printf("Servos initialized \n");
+//}

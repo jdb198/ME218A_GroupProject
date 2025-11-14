@@ -20,6 +20,9 @@
 #include "PIC32_SPI_HAL.h"
 #include <string.h>
 
+#include <proc/PIC32MX/p32mx170f256b.h>
+#include "PWM_PIC32.h"
+
 
 void main(void)
 {
@@ -39,6 +42,9 @@ void main(void)
   SPI1STATbits.SPIROV = 0;
   SPISetup_EnableSPI(SPI_SPI1);
   SPI1BUF; //reset the buffer 
+  
+ 
+  
     
 //  while (false == DM_TakeInitDisplayStep()){}
 

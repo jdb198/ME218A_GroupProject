@@ -17,7 +17,7 @@
 typedef enum
 {
   WaitForInput, UnlockWaiting, _1UnlockPress,
-  _2UnlockPresses, Locked, InitGame
+  _2UnlockPresses, Locked, InitGame, WaitForPowerUp
 }GhostHuntFSM_t;
 
 // Public Function Prototypes
