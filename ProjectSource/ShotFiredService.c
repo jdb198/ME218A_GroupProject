@@ -22,7 +22,7 @@
 */
 #include "ES_Configure.h"
 #include "ES_Framework.h"
-#include "PowerUpService.h"
+#include "ShotFiredService.h"
 
 /*----------------------------- Module Defines ----------------------------*/
 
@@ -34,9 +34,12 @@
 /*---------------------------- Module Variables ---------------------------*/
 // with the introduction of Gen2, we need a module level Priority variable
 static uint8_t MyPriority;
+static int ShotNum = 0; 
+static int ShotsInRow = 0; 
+static int PrevShot = 0; 
+static int PowerUpPressed = 0;
 
-static int PowerUpPoints = 0;
-
+static int MissGhostNum = 0;
 /*------------------------------ Module Code ------------------------------*/
 /****************************************************************************
  Function
@@ -56,7 +59,7 @@ static int PowerUpPoints = 0;
  Author
      J. Edward Carryer, 01/16/12, 10:00
 ****************************************************************************/
-bool InitPowerUpService(uint8_t Priority)
+bool InitShotFiredService(uint8_t Priority)
 {
   ES_Event_t ThisEvent;
 
@@ -93,7 +96,7 @@ bool InitPowerUpService(uint8_t Priority)
  Author
      J. Edward Carryer, 10/23/11, 19:25
 ****************************************************************************/
-bool PostPowerUpService(ES_Event_t ThisEvent)
+bool PostShotFiredService(ES_Event_t ThisEvent)
 {
   return ES_PostToService(MyPriority, ThisEvent);
 }
@@ -115,25 +118,15 @@ bool PostPowerUpService(ES_Event_t ThisEvent)
  Author
    J. Edward Carryer, 01/15/12, 15:23
 ****************************************************************************/
-ES_Event_t RunPowerUpService(ES_Event_t ThisEvent)
+ES_Event_t RunShotFiredService(ES_Event_t ThisEvent)
 {
   ES_Event_t ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
   
-  if (ThisEvent.EventParam == ES_CHECK_FOR_POWER_UP){
-      if (ThisEvent.EventParam == "PowerUp"){
-          
-          DB_printf("Congrats you earned a powerup! \n");
-          ThisEvent.EventType = ES_ADD_POINTS;
-          ThisEvent.EventParam = "DoublePoints";
-          PostPointsService(ThisEvent);
-          
-      } else if (ThisEvent.EventParam == "NoPowerUp"){
-          DB_printf("Booo no  double points for you \n");  
-          ThisEvent.EventType = ES_ADD_POINTS;
-          ThisEvent.EventParam = "RegularPoints";
-          PostPointsService(ThisEvent);
-      }
+  if (ThisEvent.EventType == ES_SHOT_FIRED){ 
+      CheckForShotReceived();
+      
+      //reset the number of shots in a row
   }
   /********************************************
    in here you write your service code
@@ -144,6 +137,36 @@ ES_Event_t RunPowerUpService(ES_Event_t ThisEvent)
 /***************************************************************************
  private functions
  ***************************************************************************/
+void CheckForShotReceived(void)
+{
+    ES_Event_t ThisEvent;
+    //this is the dummy data for testing the services all together//
+    int DummyShots[25] = {1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 
+            0, 1, 1, 1, 1, 1, 1, 1};
+    
+    if (ShotNum <24){
+        if(DummyShots[ShotNum] == 1){
+            DB_printf("You hit the ghost! \n");
+            ShotNum++;
+            ThisEvent.EventType = ES_CHECK_FOR_POWER_UP;
+            PostPointsService(ThisEvent); 
+        } else{
+            ShotNum++; 
+            DB_printf("you missed the ghost \n");
+            ThisEvent.EventType = ES_SUBTRACT_POINTS;
+            PostPointsService(ThisEvent);
+        }
+    } else {
+        ShotNum = 0; 
+    }
+    return;
+    
+    /* What you should actually do, call the output from the IR reciever, 
+     threshold to see if there is a hit from any of the 3, if so return true*/
+}
+
+
+
 
 /*------------------------------- Footnotes -------------------------------*/
 /*------------------------------ End of file ------------------------------*/

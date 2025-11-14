@@ -70,11 +70,11 @@
 // These are the definitions for Service 2
 #if NUM_SERVICES > 2
 // the header file with the public function prototypes
-#define SERV_2_HEADER "PowerUpService.h"
+#define SERV_2_HEADER "ShotFiredService.h"
 // the name of the Init function
-#define SERV_2_INIT InitPowerUpService
+#define SERV_2_INIT InitShotFiredService
 // the name of the run function
-#define SERV_2_RUN RunPowerUpService
+#define SERV_2_RUN RunShotFiredService
 // How big should this services Queue be?
 #define SERV_2_QUEUE_SIZE 3
 #endif
@@ -83,11 +83,11 @@
 // These are the definitions for Service 3
 #if NUM_SERVICES > 3
 // the header file with the public function prototypes
-#define SERV_3_HEADER "TestHarnessService3.h"
+#define SERV_3_HEADER "TestHarnessService0.h"
 // the name of the Init function
-#define SERV_3_INIT InitTestHarnessService3
+#define SERV_3_INIT InitTestHarnessService0
 // the name of the run function
-#define SERV_3_RUN RunTestHarnessService3
+#define SERV_3_RUN RunTestHarnessService0
 // How big should this services Queue be?
 #define SERV_3_QUEUE_SIZE 3
 #endif
@@ -264,7 +264,8 @@ typedef enum
   ES_UNLOCK, 
   ES_SUBTRACT_POINTS, 
   ES_ADD_POINTS, 
-  ES_CHECK_FOR_POWER_UP
+  ES_CHECK_FOR_POWER_UP, 
+  ES_SHOT_FIRED
 }ES_EventType_t;
 
 /****************************************************************************/
@@ -322,7 +323,7 @@ typedef enum
 #define TIMER11_RESP_FUNC TIMER_UNUSED
 #define TIMER12_RESP_FUNC TIMER_UNUSED
 #define TIMER13_RESP_FUNC TIMER_UNUSED
-#define TIMER14_RESP_FUNC TIMER_UNUSED
+#define TIMER14_RESP_FUNC TIMER_UNUSED //PostTestHarnessService0
 #define TIMER15_RESP_FUNC PostGhostHuntFSM
 
 /****************************************************************************/
@@ -332,6 +333,7 @@ typedef enum
 // the timer number matches where the timer event will be routed
 // These symbolic names should be changed to be relevant to your application
 
+//#define SERVICE0_TIMER 14
 #define SERVICE0_TIMER 15
 
 

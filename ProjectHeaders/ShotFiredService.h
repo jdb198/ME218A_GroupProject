@@ -5,16 +5,16 @@
 
  ****************************************************************************/
 
-#ifndef PowerUpService_H
-#define PowerUpService_H
+#ifndef ShotFiredService_H
+#define ShotFiredService_H
 
 #include "ES_Types.h"
 
 // Public Function Prototypes
 
-bool InitPowerUpService(uint8_t Priority);
-bool PostPowerUpService(ES_Event_t ThisEvent);
-ES_Event_t RunPowerUpService(ES_Event_t ThisEvent);
+bool InitShotFiredService(uint8_t Priority);
+bool PostShotFiredService(ES_Event_t ThisEvent);
+ES_Event_t RunShotFiredService(ES_Event_t ThisEvent);
 
 #endif /* ServTemplate_H */
 

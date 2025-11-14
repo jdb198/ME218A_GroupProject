@@ -121,13 +121,12 @@ ES_Event_t RunPointsService(ES_Event_t ThisEvent)
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
   
   if (ThisEvent.EventType == ES_ADD_POINTS){
-      // if a shot is detected, and no powerup detected add 2 points
-      if (ThisEvent.EventType == "PowerUp"){ 
-          TotalPoints = TotalPoints + 4; 
-      } else {
-          TotalPoints = TotalPoints +2;
-      }
       
+      if (ThisEvent.EventParam == 1){
+          TotalPoints = TotalPoints + 4;
+      }else {
+          TotalPoints = TotalPoints + 2;
+      }
       DB_printf("Total Points %d \n", TotalPoints);
       /* ADD IN A POST TO THE DISPLAY CALL TO SHOW POINTS*/
       
@@ -142,8 +141,9 @@ ES_Event_t RunPointsService(ES_Event_t ThisEvent)
       DB_printf("Total Points %d \n", TotalPoints);
       /* ADD IN A POST TO THE DISPLAY CALL TO SHOW POINTS*/
       
-  } 
-  
+  }  else if (ThisEvent.EventType == ES_CHECK_FOR_POWER_UP){
+      CheckPowerUpButton();
+  }
   /********************************************
    in here you write your service code
    *******************************************/
@@ -153,6 +153,26 @@ ES_Event_t RunPointsService(ES_Event_t ThisEvent)
 /***************************************************************************
  private functions
  ***************************************************************************/
+void CheckPowerUpButton(){
+    ES_Event_t ThisEvent;
+    int pressed = 0; /* In Actuality call from PIC */
+    
+    if (pressed == 1){
+        DB_printf("You got a power up \n");
+        ThisEvent.EventParam = 1; 
+        ThisEvent.EventType = ES_ADD_POINTS; 
+        PostPointsService(ThisEvent); 
+    } else {
+        DB_printf("Booo no extra points for you \n");
+        ThisEvent.EventParam = 0;
+        ThisEvent.EventType = ES_ADD_POINTS;         
+        PostPointsService(ThisEvent); 
+    }
+   
+    return;
+}
+
+
 
 /*------------------------------- Footnotes -------------------------------*/
 /*------------------------------ End of file ------------------------------*/

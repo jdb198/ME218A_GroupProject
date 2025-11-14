@@ -168,6 +168,8 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
         if (ThisEvent.EventParam == 's'){
             // example of someone taking a shot. 
             DB_printf("You took a shot \n"); 
+            ThisEvent.EventType = ES_SHOT_FIRED;
+            PostShotFiredService(ThisEvent); 
             //post to shot service to determine if missed or made
         } else if (ThisEvent.EventParam == 'a') {
             //This represents an audible sound being made 
@@ -177,16 +179,6 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
             //this represents the power up button being shot
             DB_printf("You hit the power up button \n");
             //check for enough points hit in a row. 
-            ThisEvent.EventType = ES_CHECK_FOR_POWER_UP; 
-            
-            // ok the way to do this is to post to the IR Sensor, see if 5 compltete points have been hit 
-            // if five have been hit. save param as double points. 
-            PostPowerUpService(ThisEvent);
-                    
-            // post to points service the check for points. If return enough
-            // points in param, then add double points 
-            
-            // post to power up service (check for enough points and go to points)
         }
     }
     break;
@@ -218,7 +210,7 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
  Author
      J. Edward Carryer, 10/23/11, 19:21
 ****************************************************************************/
-TemplateState_t QueryGhostHuntFSM(void)
+GhostHuntFSM_t QueryGhostHuntFSM(void)
 {
   return CurrentState;
 }
