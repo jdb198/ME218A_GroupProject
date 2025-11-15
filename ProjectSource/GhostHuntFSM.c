@@ -48,6 +48,11 @@ static GhostHuntFSM_t  NextState;
 #define FIVE_SEC (ONE_SEC * 5)
 #define SIXTY_SEC (ONE_SEC * 60)
 
+#define PBCLK_RATE 20000000L
+#define TIMER_DIV 8
+#define TICS_PER_MS 2500
+#define SERVO_PERIOD  (20*TICS_PER_MS)
+
 // with the introduction of Gen2, we need a module level Priority var as well
 static uint8_t MyPriority;
 
@@ -173,11 +178,11 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
     {
         if (ThisEvent.EventParam == 's'){
             DB_printf("Check for Servos \n");
-            for (int j=0; j < 5; j++){
-                    PWMOperate_SetPulseWidthOnChannel(2500, 1); 
-                    PWMOperate_SetPulseWidthOnChannel(2500, 2);
-                    DB_printf("MovementEnded\n");
-            }
+            PWMOperate_SetPulseWidthOnChannel(1000, 1);
+            PWMOperate_SetPulseWidthOnChannel(1000, 2);
+        } else if (ThisEvent.EventParam == 'j'){
+            PWMOperate_SetPulseWidthOnChannel(2000, 1);
+            PWMOperate_SetPulseWidthOnChannel(2000, 2);
         }
         break;
     }
@@ -288,6 +293,27 @@ void InitServos(void)
     PWMOperate_SetDutyOnChannel(50, 2);
     DB_printf("Servos initialized \n");
 }
+
+//uint32_t random_angle_to_pulsewidth()
+//{
+//   // delay_ms();
+//    uint32_t angle = rand() % 181;   // 0?180 degrees
+//
+//    // Desired pulse in microseconds
+//    uint32_t pulse_us = 700 + ((angle * (2400 - 700)) / 180);
+//
+//    // Convert µs -> timer ticks: TICS_PER_MS = 2500 ticks/ms
+//    // 1 ms = 1000 µs, so ticks = pulse_us * 2500 / 1000
+//    uint32_t pulse_ticks = (pulse_us * TICS_PER_MS) / 1000;
+//
+//    return pulse_ticks;
+//}
+
+void delay_ms(uint32_t ms)
+{
+    for (uint32_t i = 0; i < ms * 4000; i++) {}
+}
+
 
 
 /*  For Reference later when I get back to integration */
