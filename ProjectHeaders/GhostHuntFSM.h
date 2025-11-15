@@ -26,6 +26,7 @@ bool InitGhostHuntFSM(uint8_t Priority);
 bool PostGhostHuntFSM(ES_Event_t ThisEvent);
 ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent);
 GhostHuntFSM_t QueryGhostHuntFSM(void);
+void InitMicrophone(void);
 
 #endif /* FSMTemplate_H */
 

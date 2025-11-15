@@ -270,7 +270,9 @@ typedef enum
   ES_SUBTRACT_2,
   ES_SUBTRACT_1, 
   ES_POWER_UP, 
-  ES_NO_POWER_UP
+  ES_NO_POWER_UP,
+  ES_SOUND,
+  ES_SHOT  // clean up later, you have two shots as events. and two for power up
 }ES_EventType_t;
 
 /****************************************************************************/
@@ -305,8 +307,8 @@ typedef enum
 
 /****************************************************************************/
 // This is the list of event checking functions
-#define EVENT_CHECK_LIST Check4Keystroke, Check4PowerUp //InitPowerUpButton, 
-//InitShootButton,InitIRReciever, InitMicrophone, InitServos
+#define EVENT_CHECK_LIST Check4Keystroke,Check4PowerUp,Check4Shot,Check4Sound 
+
 
 /****************************************************************************/
 // These are the definitions for the post functions to be executed when the

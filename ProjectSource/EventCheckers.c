@@ -40,6 +40,11 @@
 // actual functionsdefinition
 #include "EventCheckers.h"
 
+//#define long32_word0(0x000003FF & x)
+
+/* Constants */
+uint32_t ConstSound = 511; //512;
+
 // This is the event checking function sample. It is not intended to be
 // included in the module. It is only here as a sample to guide you in writing
 // your own event checkers
@@ -125,72 +130,60 @@ bool Check4PowerUp(void)
     ES_Event_t ThisEvent;
     uint32_t CurrentPowerUpState = PORTAbits.RA3;
     uint32_t LastPowerUpState = 0; 
-    if (CurrentPowerUpState != LastPowerUpState) {
-        ThisEvent.EventType = ES_POWER_UP;
-        ThisEvent.EventParam = PORTAbits.RA3;
-        PostGhostHuntFSM(ThisEvent); 
-        ReturnVal = true;
+    if (CurrentPowerUpState == 0) {
+        for (int i=0; i < 1000; i++){} // delay button
+//        __delay_ms(20);
+        if (PORTAbits.RA3 == 1){
+            ThisEvent.EventType = ES_POWER_UP;
+            ThisEvent.EventParam = PORTAbits.RA3;
+            PostGhostHuntFSM(ThisEvent); 
+            ReturnVal = true;
+        }
     }
     CurrentPowerUpState = LastPowerUpState; 
     return ReturnVal;
 }
 
-//void InitShootButton(void)
-//{
-//      // set up shooting button 
-//  TRISBbits.TRISB2 = 1; // set as input 
-//  
-//  
-//  uint32_t ShootButtonLastState = PORTBbits.RB2;
-//  DB_printf("Shoot button initialized \n");
-//}
-//
-//void InitIRReciever(void)
-//{
-//    //set up IR Reciever 
-//    TRISAbits.TRISA4 = 1;   // make RA4 a digital input (IR receiver)
-//    uint32_t LastIRReceived = PORTAbits.RA4;
-//    DB_printf("IR receiver initialized \n");
-//  
-//}
+bool Check4Shot(void)
+{
+    bool ReturnVal = false; 
+    ES_Event_t ThisEvent; 
+    uint32_t CurrentShotState = PORTBbits.RB2;
+    uint32_t LastShotState = 0; 
+    if(CurrentShotState == 0){
+        for (int i=0; i < 100; i++){} // delay bounce
+        if (PORTBbits.RB2 == 1){
+            ThisEvent.EventType = ES_SHOT;
+            ThisEvent.EventParam = PORTBbits.RB2;
+            PostGhostHuntFSM(ThisEvent);
+            ReturnVal = true;
+        }
+    }
+    CurrentShotState = LastShotState; 
+    return ReturnVal;
+}
 
-//void InitIREmitter(void)
-//{
-//      // set up IR Emitter
-//
-//  TRISAbits.TRISA2 = 0; // set as input 
-//  
-//  uint32_t LastIREmitted = PORTAbits.RA2;
-////  DB_printf("IR Emitter initialized \n");
-//  
-//}
+bool Check4Sound(void)
+{
+    bool ReturnVal = false; 
+    ES_Event_t ThisEvent; 
+    
+//    ADC_ConfigAutoScan(BIT13HI);
+    uint32_t ConversionResults[1];
+    ADC_MultiRead(ConversionResults);
 
-//void InitMicrophone(void)
-//{
-// TRISBbits.TRISB13 = 1;   // make RB13 an input (microphone)
-// ANSELBbits.ANSB13 = 1;   // make RB13 an analog input
-// 
-// //    /* initialize AD for microphone */
-//    AD1CON1 = 0;
-//    AD1CON1bits.SSRC = 0b111;
-//    AD1CON1bits.FORM = 0;       // 16-bit integer result
-//    AD1CON2 = 0;
-//    AD1CON3 = 0x1F02;
-//    AD1CHSbits.CH0SA = 11;    
-//    AD1CON1bits.ADON = 1;
-//  
-//  uint32_t LastMicrophoneInput = PORTBbits.RB13;
-////  DB_printf("Mic initialized \n");
-//}
+   
+    uint32_t CurrentSound = ConversionResults[0];
+    
+    if((CurrentSound) > 600){
+        float SendVal = CurrentSound/100;
+        SendVal = (int)SendVal;
 
-
-
-
-//void InitServos(void)
-//{
-//    TRISBbits.TRISB3 = 0;
-//    LATBbits.LATB3 = 1;
-//    TRISBbits.TRISB8 = 0;
-//    LATBbits.LATB8 = 1; 
-////    DB_printf("Servos initialized \n");
-//}
+        ThisEvent.EventType = ES_SOUND; 
+        ThisEvent.EventParam = SendVal; 
+        PostGhostHuntFSM(ThisEvent);
+        ReturnVal = true;
+        for (int i=0; i < 100000; i++){} // delay bounce
+    }
+    return ReturnVal; 
+}

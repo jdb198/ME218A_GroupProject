@@ -23,10 +23,8 @@
 
 bool Check4Keystroke(void);
 bool Check4PowerUp(void);
-//void InitShootButton(void);
-//void InitIRReciever(void);
-//void InitMicrophone(void);
-void InitPowerUpButton(void);
-//void InitServos(void);
+bool Check4Shot(void);
+bool Check4Sound(void);
+
 
 #endif /* EventCheckers_H */

@@ -26,6 +26,8 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "GhostHuntFSM.h"
+#include <proc/PIC32MX/p32mx170f256b.h>
+#include "PWM_PIC32.h"
 
 /*----------------------------- Module Defines ----------------------------*/
 
@@ -71,25 +73,22 @@ static uint8_t MyPriority;
 bool InitGhostHuntFSM(uint8_t Priority)
 {
   ES_Event_t ThisEvent;
-
   MyPriority = Priority;
- 
   clrScrn();
   
   //initialize all inputs and outputs
   ANSELA = 0; 
   ANSELB = 0; 
   
-//  InitServos();
-//  InitShootButton();
+  InitServos();
+  InitShootButton();
 //  InitIREmitter(); 
   InitPowerUpButton(); 
 //  InitIRReciever(); 
-//  InitMicrophone(); 
+  InitMicrophone(); 
   
   uint32_t LastPowerUpState = 0;
     
-  CurrentState = InitGame;
   // post the initial transition event
   ThisEvent.EventType = ES_INIT;
   if (ES_PostToService(MyPriority, ThisEvent) == true)
@@ -144,82 +143,59 @@ bool PostGhostHuntFSM(ES_Event_t ThisEvent)
 ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
 {
   ES_Event_t ReturnEvent;
-  
-  
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
-  NextState = CurrentState;
   
-
-
   switch (ThisEvent.EventType)
   {
       case ES_INIT: // If current state is initial Psedudo State
     {
         DB_printf("WELCOME \n");
-//      if (ThisEvent.EventType == ES_INIT)    // only respond to ES_Init
-//      {
-//        // Begining of the game, Print welcome and begin overall game timer
-//          DB_printf("WELCOME \n"); 
-//        
-//      }
-      NextState = ES_POWER_UP;
-      DB_printf("You are waiting for an input \n");
+        DB_printf("You are waiting for an input \n");
     }
     break;
-    
-//    switch (CurrentState)
-//  {
-//      case InitGame: // If current state is initial Psedudo State
-//    {
-//      if (ThisEvent.EventType == ES_INIT)    // only respond to ES_Init
-//      {
-//        // Begining of the game, Print welcome and begin overall game timer
-//          DB_printf("WELCOME \n"); 
-//        
-//      }
-//      NextState = WaitForInput;
-//      DB_printf("You are waiting for an input \n");
-//    }
-//    break;
     
     case ES_POWER_UP:        // If current state is state one
     {
         DB_printf("You hit the Power up Button \n");
         break;
-//        if (ThisEvent.EventType  == ES_POWER_UP){
-//            if (ThisEvent.EventParam ==1){
-//                DB_printf("You hit the powerup button \n"); 
-//            }
-//        }
-//        ThisEvent.EventType = ES_NEW_KEY; 
-//        if (ThisEvent.EventParam == 's'){
-//            // example of someone taking a shot. 
-//            DB_printf("You took a shot \n"); 
-//            ThisEvent.EventType = ES_SHOT_FIRED;
-//            PostShotFiredService(ThisEvent); 
-//            //post to shot service to determine if missed or made
-//        } else if (ThisEvent.EventParam == 'a') {
-//            //This represents an audible sound being made 
-//            DB_printf("You made a sound and scared the ghost \n");
-//            PostAudioService(ThisEvent);
-//            ThisEvent.EventType = ES_MOVE_SERVOS;
-//            PostMoveServosService(ThisEvent);
-//            // post to points and subtract 5
-//        } else if (ThisEvent.EventParam == 'p') {
-//            //this represents the power up button being shot
-//            DB_printf("You hit the power up button \n");
-//            //check for enough points hit in a row. 
-//        }
+
     }
     break;
     
+    case ES_SHOT:        // If current state is state one
+    {
+        DB_printf("You took a shot \n");
+        break;
+    }
+    break;
     
+    case ES_NEW_KEY:        // If current state is state one
+    {
+        if (ThisEvent.EventParam == 's'){
+            DB_printf("Check for Servos \n");
+            for (int j=0; j < 5; j++){
+                    PWMOperate_SetPulseWidthOnChannel(2500, 1); 
+                    PWMOperate_SetPulseWidthOnChannel(2500, 2);
+                    DB_printf("MovementEnded\n");
+            }
+        }
+        break;
+    }
+    break;
+    
+    case ES_SOUND:        // If current state is state one
+    {
+        DB_printf("The current voltage is  %d \n", ThisEvent.EventParam);
+        break;
+    }
+    break;
     
     // repeat state pattern as required for other states
     default:
-      ;
+    {}
+     break;
   }            
-  CurrentState = NextState;
+//  CurrentState = NextState;
   // end switch on Current State
   return ReturnEvent;
 }
@@ -253,7 +229,84 @@ GhostHuntFSM_t QueryGhostHuntFSM(void)
 void InitPowerUpButton(void) 
 {
   TRISAbits.TRISA3 = 1;   // make RA3 a digital input (power up button)
-  
   uint32_t LastPowerUpState = PORTAbits.RA3;
 }
+  
+  void InitShootButton(void)
+{
+  // set up shooting button 
+  TRISBbits.TRISB2 = 1; // set as input 
+  uint32_t ShootButtonLastState = PORTBbits.RB2; 
+  DB_printf("Shoot button initialized \n");
+}
+//
+//void InitIRReciever(void)
+//{
+//    //set up IR Reciever 
+//    TRISAbits.TRISA4 = 1;   // make RA4 a digital input (IR receiver)
+//    uint32_t LastIRReceived = PORTAbits.RA4;
+//    DB_printf("IR receiver initialized \n");
+//  
+//}
 
+//void InitIREmitter(void)
+//{
+//      // set up IR Emitter
+//
+//  TRISAbits.TRISA2 = 0; // set as input 
+//  
+//  uint32_t LastIREmitted = PORTAbits.RA2;
+////  DB_printf("IR Emitter initialized \n");
+//  
+//}
+
+void InitMicrophone(void)
+{
+    
+ TRISBbits.TRISB13 = 1;   // make RB13 an input (microphone)
+ ANSELBbits.ANSB13 = 1;   // make RB13 an analog input
+ ADC_ConfigAutoScan(BIT11HI);
+
+  DB_printf("Mic initialized \n");
+ 
+}
+  
+void InitServos(void)
+{
+    TRISBbits.TRISB3 = 0;
+    LATBbits.LATB3 = 1;
+    TRISBbits.TRISB8 = 0;
+    LATBbits.LATB8 = 1; 
+    
+    PWMSetup_BasicConfig(2);
+    PWMSetup_MapChannelToOutputPin(1, PWM_RPB3);
+    PWMSetup_MapChannelToOutputPin(2, PWM_RPB8);
+    PWMSetup_AssignChannelToTimer(1, _Timer2_);
+    PWMSetup_AssignChannelToTimer(2, _Timer2_);
+    PWMSetup_SetFreqOnTimer(50, _Timer2_);  // 50 Hz servo frequency
+    PWMOperate_SetDutyOnChannel(50, 1);
+    PWMOperate_SetDutyOnChannel(50, 2);
+    DB_printf("Servos initialized \n");
+}
+
+
+/*  For Reference later when I get back to integration */
+//        ThisEvent.EventType = ES_NEW_KEY; 
+//        if (ThisEvent.EventParam == 's'){
+//            // example of someone taking a shot. 
+//            DB_printf("You took a shot \n"); 
+//            ThisEvent.EventType = ES_SHOT_FIRED;
+//            PostShotFiredService(ThisEvent); 
+//            //post to shot service to determine if missed or made
+//        } else if (ThisEvent.EventParam == 'a') {
+//            //This represents an audible sound being made 
+//            DB_printf("You made a sound and scared the ghost \n");
+//            PostAudioService(ThisEvent);
+//            ThisEvent.EventType = ES_MOVE_SERVOS;
+//            PostMoveServosService(ThisEvent);
+//            // post to points and subtract 5
+//        } else if (ThisEvent.EventParam == 'p') {
+//            //this represents the power up button being shot
+//            DB_printf("You hit the power up button \n");
+//            //check for enough points hit in a row. 
+//        }
