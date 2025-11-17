@@ -117,8 +117,10 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
 {
   ES_Event_t ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
-  if (ThisEvent.EventType == ES_MOVE_SERVOS){
-    DB_printf("Moving the servos \n");
+  if (ThisEvent.EventType == ES_GHOST_JERK){
+    DB_printf("The ghost has moved out of fright \n");
+  } else if (ThisEvent.EventType == ES_GHOST_TIMER){
+      DB_printf("The ghost has moved after 5 seconds");
   }
   /********************************************
    in here you write your service code
@@ -129,6 +131,26 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
 /***************************************************************************
  private functions
  ***************************************************************************/
+
+//uint32_t random_angle_to_pulsewidth()
+//{
+//   // delay_ms();
+//    uint32_t angle = rand() % 181;   // 0?180 degrees
+//
+//    // Desired pulse in microseconds
+//    uint32_t pulse_us = 700 + ((angle * (2400 - 700)) / 180);
+//
+//    // Convert µs -> timer ticks: TICS_PER_MS = 2500 ticks/ms
+//    // 1 ms = 1000 µs, so ticks = pulse_us * 2500 / 1000
+//    uint32_t pulse_ticks = (pulse_us * TICS_PER_MS) / 1000;
+//
+//    return pulse_ticks;
+//}
+
+void delay_ms(uint32_t ms)
+{
+    for (uint32_t i = 0; i < ms * 4000; i++) {}
+}
 
 /*------------------------------- Footnotes -------------------------------*/
 /*------------------------------ End of file ------------------------------*/

@@ -156,6 +156,9 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
     {
         DB_printf("WELCOME \n");
         DB_printf("You are waiting for an input \n");
+        DB_printf("Timer started \n");
+        ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC);
+  
     }
     break;
     
@@ -167,7 +170,7 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
     }
     break;
     
-    case ES_SHOT:        // If current state is state one
+    case ES_SHOT:        // If someone presses the shoot button 
     {
         DB_printf("You took a shot \n");
         break;
@@ -177,13 +180,30 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
     case ES_NEW_KEY:        // If current state is state one
     {
         if (ThisEvent.EventParam == 's'){
-            DB_printf("Check for Servos \n");
-            PWMOperate_SetPulseWidthOnChannel(1000, 1);
-            PWMOperate_SetPulseWidthOnChannel(1000, 2);
-        } else if (ThisEvent.EventParam == 'j'){
-            PWMOperate_SetPulseWidthOnChannel(2000, 1);
-            PWMOperate_SetPulseWidthOnChannel(2000, 2);
+            // example of someone taking a shot. 
+            DB_printf("You took a shot \n"); 
+            ThisEvent.EventType = ES_SHOT_FIRED;
+            PostShotFiredService(ThisEvent); 
+            //post to shot service to determine if missed or made
+        } else if (ThisEvent.EventParam == 'a') {
+            //This represents an audible sound being made 
+            DB_printf("You made a sound and scared the ghost \n");
+            ThisEvent.EventType = ES_GHOST_JERK;
+            PostMoveServosService(ThisEvent);
+            PostPointsService(ThisEvent);
+            // post to points and subtract 5
+        } else if (ThisEvent.EventParam == 'p') {
+            //this represents the power up button being shot
+            DB_printf("You hit the power up button \n");
+            //check for enough points hit in a row. 
+        } else if (ThisEvent.EventParam == 'c'){
+            uint16_t InitTime = ES_Timer_GetTime();
+            DB_printf("the initial time is %d \n", InitTime);
+            for (int i=0; i < 100; i++){}
+//            uint16_t DeltaT = InitTime - ES_Timer_GetTime();
+            DB_printf("The delta t is %d \n", InitTime - ES_Timer_GetTime());
         }
+        
         break;
     }
     break;
@@ -191,6 +211,14 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
     case ES_SOUND:        // If current state is state one
     {
         DB_printf("The current voltage is  %d \n", ThisEvent.EventParam);
+        break;
+    }
+    break;
+    
+    case ES_TIMEOUT:        // If current state is state one
+    {
+            ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC);
+            DB_printf("GameOver \n");
         break;
     }
     break;
@@ -294,45 +322,5 @@ void InitServos(void)
     DB_printf("Servos initialized \n");
 }
 
-//uint32_t random_angle_to_pulsewidth()
-//{
-//   // delay_ms();
-//    uint32_t angle = rand() % 181;   // 0?180 degrees
-//
-//    // Desired pulse in microseconds
-//    uint32_t pulse_us = 700 + ((angle * (2400 - 700)) / 180);
-//
-//    // Convert µs -> timer ticks: TICS_PER_MS = 2500 ticks/ms
-//    // 1 ms = 1000 µs, so ticks = pulse_us * 2500 / 1000
-//    uint32_t pulse_ticks = (pulse_us * TICS_PER_MS) / 1000;
-//
-//    return pulse_ticks;
-//}
-
-void delay_ms(uint32_t ms)
-{
-    for (uint32_t i = 0; i < ms * 4000; i++) {}
-}
 
 
-
-/*  For Reference later when I get back to integration */
-//        ThisEvent.EventType = ES_NEW_KEY; 
-//        if (ThisEvent.EventParam == 's'){
-//            // example of someone taking a shot. 
-//            DB_printf("You took a shot \n"); 
-//            ThisEvent.EventType = ES_SHOT_FIRED;
-//            PostShotFiredService(ThisEvent); 
-//            //post to shot service to determine if missed or made
-//        } else if (ThisEvent.EventParam == 'a') {
-//            //This represents an audible sound being made 
-//            DB_printf("You made a sound and scared the ghost \n");
-//            PostAudioService(ThisEvent);
-//            ThisEvent.EventType = ES_MOVE_SERVOS;
-//            PostMoveServosService(ThisEvent);
-//            // post to points and subtract 5
-//        } else if (ThisEvent.EventParam == 'p') {
-//            //this represents the power up button being shot
-//            DB_printf("You hit the power up button \n");
-//            //check for enough points hit in a row. 
-//        }

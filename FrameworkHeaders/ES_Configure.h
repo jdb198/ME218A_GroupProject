@@ -33,7 +33,7 @@
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 1
+#define NUM_SERVICES 3
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service.
@@ -265,14 +265,13 @@ typedef enum
   ES_SUBTRACT_POINTS, 
   ES_ADD_POINTS, 
   ES_CHECK_FOR_POWER_UP, 
-  ES_SHOT_FIRED,
-  ES_SUBTRACT_3,
-  ES_SUBTRACT_2,
-  ES_SUBTRACT_1, 
+  ES_SHOT_FIRED, 
   ES_POWER_UP, 
   ES_NO_POWER_UP,
   ES_SOUND,
-  ES_SHOT  // clean up later, you have two shots as events. and two for power up
+  ES_GHOST_TIMER, 
+  ES_GHOST_JERK, 
+  ES_SHOT 
 }ES_EventType_t;
 
 /****************************************************************************/
