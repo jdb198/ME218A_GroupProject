@@ -5,16 +5,16 @@
 
  ****************************************************************************/
 
-#ifndef ServTemplate_H
-#define ServTemplate_H
+#ifndef DisplayService_H
+#define DisplayService_H
 
 #include "ES_Types.h"
 
 // Public Function Prototypes
 
-bool InitTemplateService(uint8_t Priority);
-bool PostTemplateService(ES_Event_t ThisEvent);
-ES_Event_t RunTemplateService(ES_Event_t ThisEvent);
+bool InitDisplayService(uint8_t Priority);
+bool PostDisplayService(ES_Event_t ThisEvent);
+ES_Event_t RunDisplayService(ES_Event_t ThisEvent);
 
 #endif /* ServTemplate_H */
 

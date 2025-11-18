@@ -22,7 +22,7 @@
 */
 #include "ES_Configure.h"
 #include "ES_Framework.h"
-#include "TemplateService.h"
+#include "DisplayService.h"
 
 /*----------------------------- Module Defines ----------------------------*/
 
@@ -54,7 +54,7 @@ static uint8_t MyPriority;
  Author
      J. Edward Carryer, 01/16/12, 10:00
 ****************************************************************************/
-bool InitTemplateService(uint8_t Priority)
+bool InitDisplayService(uint8_t Priority)
 {
   ES_Event_t ThisEvent;
 
@@ -91,7 +91,7 @@ bool InitTemplateService(uint8_t Priority)
  Author
      J. Edward Carryer, 10/23/11, 19:25
 ****************************************************************************/
-bool PostTemplateService(ES_Event_t ThisEvent)
+bool PostDisplayService(ES_Event_t ThisEvent)
 {
   return ES_PostToService(MyPriority, ThisEvent);
 }
@@ -113,13 +113,24 @@ bool PostTemplateService(ES_Event_t ThisEvent)
  Author
    J. Edward Carryer, 01/15/12, 15:23
 ****************************************************************************/
-ES_Event_t RunTemplateService(ES_Event_t ThisEvent)
+ES_Event_t RunDisplayService(ES_Event_t ThisEvent)
 {
   ES_Event_t ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
-  /********************************************
-   in here you write your service code
-   *******************************************/
+  if (ThisEvent.EventType = ES_WELCOME_DISPLAY){ 
+    // Display #1 that says welcome and game over
+    DB_printf("Print Welcome on the Display\n");
+    /* AYTAN ADD DISPLAY HERE */
+  } else if (ThisEvent.EventType = ES_POINT_DISPLAY){
+    // Display #2 that displays points 
+    DB_printf("Points printed on display %d \n", ThisEvent.EventParam); 
+    /* AYTAN ADD DISPLAY HERE*/
+
+  } else if (ThisEvent.EventType = ES_GAME_OVER){
+    // Display #1 that says welcome and game over
+    DB_printf("Print GameOver on Display \n"); 
+    /* AYTAN ADD DISPLAY HERE */
+  }
   return ReturnEvent;
 }
 

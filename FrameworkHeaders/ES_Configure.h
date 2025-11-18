@@ -271,6 +271,9 @@ typedef enum
   ES_SOUND,
   ES_GHOST_TIMER, 
   ES_GHOST_JERK, 
+  ES_WELCOME_DISPLAY, 
+  ES_POINT_DISPLAY, 
+  ES_GAME_OVER,
   ES_SHOT 
 }ES_EventType_t;
 

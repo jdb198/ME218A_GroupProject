@@ -127,27 +127,52 @@ ES_Event_t RunPointsService(ES_Event_t ThisEvent)
       }else {
           TotalPoints = TotalPoints + 2;
       }
-      DB_printf("Total Points %d \n", TotalPoints);
-      /* ADD IN A POST TO THE DISPLAY CALL TO SHOW POINTS*/
+      // DB_printf("Total Points %d \n", TotalPoints);
+      ThisEvent.EventType = ES_POINT_DISPLAY; 
+      ThisEvent.EventParam = TotalPoints; 
+      PostDisplayService(ThisEvent); 
       
   } else if (ThisEvent.EventType == ES_GHOST_JERK){
       if(TotalPoints == 0){
           TotalPoints = 0; 
-      } else if (TotalPoints - 5 < 0){
+      } else if (TotalPoints - ThisEvent.EventParam < 0){
           TotalPoints = 0; 
       } else {
-          TotalPoints = TotalPoints - 5;
+          TotalPoints = TotalPoints - ThisEvent.EventParam;
       }
-      DB_printf("Total Points %d \n", TotalPoints);
-      /* ADD IN A POST TO THE DISPLAY CALL TO SHOW POINTS*/
-      
-  } 
-    else if (ThisEvent.EventType == ES_CHECK_FOR_POWER_UP){
+      // DB_printf("Total Points %d \n", TotalPoints);
+      ThisEvent.EventType = ES_POINT_DISPLAY; 
+      ThisEvent.EventParam = TotalPoints; 
+      PostDisplayService(ThisEvent); 
+
+  } else if (ThisEvent.EventType == ES_GAME_OVER){
+    //post thte number of tokens to the move servos so that that can dictate the number of gears
+      ThisEvent.EventParam = TotalPoints; 
+      PostMoveServosService(ThisEvent);
+      TotalPoints = 0; 
+      ThisEvent.EventType = ES_POINT_DISPLAY; 
+      ThisEvent.EventParam = TotalPoints; 
+      PostDisplayService(ThisEvent); 
+
+
+  } else if (ThisEvent.EventType == ES_CHECK_FOR_POWER_UP){
       CheckPowerUpButton();
+
+      
+  } else if (ThisEvent.EventType == ES_SUBTRACT_POINTS){
+    if(TotalPoints == 0){
+          TotalPoints = 0; 
+      } else if (TotalPoints - 3 < 0){
+          TotalPoints = 0; 
+      } else {
+          TotalPoints = TotalPoints - 3;
+      }
+      // DB_printf("Total Points %d \n", TotalPoints);
+      ThisEvent.EventType = ES_POINT_DISPLAY; 
+      ThisEvent.EventParam = TotalPoints; 
+      PostDisplayService(ThisEvent); 
   }
-  /********************************************
-   in here you write your service code
-   *******************************************/
+
   return ReturnEvent;
 }
 

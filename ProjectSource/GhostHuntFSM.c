@@ -173,52 +173,47 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
     case ES_SHOT:        // If someone presses the shoot button 
     {
         DB_printf("You took a shot \n");
+        ThisEvent.EventType = ES_SHOT_FIRED;
+        PostShotFiredService(ThisEvent); 
         break;
     }
     break;
     
-    case ES_NEW_KEY:        // If current state is state one
-    {
-        if (ThisEvent.EventParam == 's'){
-            // example of someone taking a shot. 
-            DB_printf("You took a shot \n"); 
-            ThisEvent.EventType = ES_SHOT_FIRED;
-            PostShotFiredService(ThisEvent); 
-            //post to shot service to determine if missed or made
-        } else if (ThisEvent.EventParam == 'a') {
-            //This represents an audible sound being made 
-            DB_printf("You made a sound and scared the ghost \n");
-            ThisEvent.EventType = ES_GHOST_JERK;
-            PostMoveServosService(ThisEvent);
-            PostPointsService(ThisEvent);
-            // post to points and subtract 5
-        } else if (ThisEvent.EventParam == 'p') {
-            //this represents the power up button being shot
-            DB_printf("You hit the power up button \n");
-            //check for enough points hit in a row. 
-        } else if (ThisEvent.EventParam == 'c'){
-            uint16_t InitTime = ES_Timer_GetTime();
-            DB_printf("the initial time is %d \n", InitTime);
-            for (int i=0; i < 100; i++){}
-//            uint16_t DeltaT = InitTime - ES_Timer_GetTime();
-            DB_printf("The delta t is %d \n", InitTime - ES_Timer_GetTime());
-        }
+    // case ES_NEW_KEY:        // If current state is state one
+    // {
+    //     if (ThisEvent.EventParam == 's'){
+    //         // example of someone taking a shot. 
+    //         DB_printf("You took a shot \n"); 
+            
+    //         //post to shot service to determine if missed or made
+    //     } else if (ThisEvent.EventParam == 'p') {
+    //         //this represents the power up button being shot
+    //         DB_printf("You hit the power up button \n");
+    //         //check for enough points hit in a row. 
         
-        break;
-    }
-    break;
+    //     break;
+    // }
+    // break;
     
     case ES_SOUND:        // If current state is state one
     {
-        DB_printf("The current voltage is  %d \n", ThisEvent.EventParam);
+        // DB_printf("The current voltage is  %d \n", ThisEvent.EventParam);
+        ThisEvent.EventType = ES_GHOST_JERK;
+        PostMoveServosService(ThisEvent);
+        PostPointsService(ThisEvent);
+        PostSoundService(ThisEvent); 
         break;
     }
     break;
     
     case ES_TIMEOUT:        // If current state is state one
     {
-            ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC);
-            DB_printf("GameOver \n");
+            // ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC);
+            
+            ThisEvent.EventType = ES_GAME_OVER;
+            PostDisplayService(ThisEvent); 
+            PostPointsService(ThisEvent);
+            // DB_printf("GameOver \n");
         break;
     }
     break;

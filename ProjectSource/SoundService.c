@@ -22,7 +22,7 @@
 */
 #include "ES_Configure.h"
 #include "ES_Framework.h"
-#include "MoveServosService.h"
+#include "SoundService.h"
 
 /*----------------------------- Module Defines ----------------------------*/
 
@@ -54,7 +54,7 @@ static uint8_t MyPriority;
  Author
      J. Edward Carryer, 01/16/12, 10:00
 ****************************************************************************/
-bool InitMoveServosService(uint8_t Priority)
+bool InitSoundService(uint8_t Priority)
 {
   ES_Event_t ThisEvent;
 
@@ -91,7 +91,7 @@ bool InitMoveServosService(uint8_t Priority)
  Author
      J. Edward Carryer, 10/23/11, 19:25
 ****************************************************************************/
-bool PostMoveServosService(ES_Event_t ThisEvent)
+bool PostSoundService(ES_Event_t ThisEvent)
 {
   return ES_PostToService(MyPriority, ThisEvent);
 }
@@ -113,47 +113,24 @@ bool PostMoveServosService(ES_Event_t ThisEvent)
  Author
    J. Edward Carryer, 01/15/12, 15:23
 ****************************************************************************/
-ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
+ES_Event_t RunSoundService(ES_Event_t ThisEvent)
 {
   ES_Event_t ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
   if (ThisEvent.EventType == ES_GHOST_JERK){
-    DB_printf("The ghost has moved out of fright \n");
-    /* AYTAN ADD CODE HERE */
-  } else if (ThisEvent.EventType == ES_GHOST_TIMER){
-      DB_printf("The ghost has moved after 5 seconds");
-      /* AYTAN ADD CODE HERE */
-  } else if (ThisEvent.EventType == ES_GAME_OVER){
-    uint32_t NumPointsWon = ThisEvent.EventParam;
-    DB_printf("Dispense the total number of gears depending on the total points")
-    /* AYTAN ADD CODE HERE */
-  }
+    DB_printf("The ghost made a scary sound \n"); 
+    /* AYTAN ADD SCARY GHOST NOISES HERE*/
+  } 
+
+  /********************************************
+   in here you write your service code
+   *******************************************/
   return ReturnEvent;
 }
 
 /***************************************************************************
  private functions
  ***************************************************************************/
-
-//uint32_t random_angle_to_pulsewidth()
-//{
-//   // delay_ms();
-//    uint32_t angle = rand() % 181;   // 0?180 degrees
-//
-//    // Desired pulse in microseconds
-//    uint32_t pulse_us = 700 + ((angle * (2400 - 700)) / 180);
-//
-//    // Convert �s -> timer ticks: TICS_PER_MS = 2500 ticks/ms
-//    // 1 ms = 1000 �s, so ticks = pulse_us * 2500 / 1000
-//    uint32_t pulse_ticks = (pulse_us * TICS_PER_MS) / 1000;
-//
-//    return pulse_ticks;
-//}
-
-void delay_ms(uint32_t ms)
-{
-    for (uint32_t i = 0; i < ms * 4000; i++) {}
-}
 
 /*------------------------------- Footnotes -------------------------------*/
 /*------------------------------ End of file ------------------------------*/
