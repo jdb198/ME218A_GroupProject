@@ -33,7 +33,7 @@
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 3
+#define NUM_SERVICES 6
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service.
@@ -83,11 +83,11 @@
 // These are the definitions for Service 3
 #if NUM_SERVICES > 3
 // the header file with the public function prototypes
-#define SERV_3_HEADER "TestHarnessService0.h"
+#define SERV_3_HEADER "SoundService.h"
 // the name of the Init function
-#define SERV_3_INIT InitTestHarnessService0
+#define SERV_3_INIT InitSoundService
 // the name of the run function
-#define SERV_3_RUN RunTestHarnessService0
+#define SERV_3_RUN RunSoundService
 // How big should this services Queue be?
 #define SERV_3_QUEUE_SIZE 3
 #endif
@@ -96,11 +96,11 @@
 // These are the definitions for Service 4
 #if NUM_SERVICES > 4
 // the header file with the public function prototypes
-#define SERV_4_HEADER "AudioService.h"
+#define SERV_4_HEADER "MoveServosService.h"
 // the name of the Init function
-#define SERV_4_INIT InitAudioService
+#define SERV_4_INIT InitMoveServosService
 // the name of the run function
-#define SERV_4_RUN RunAudioService
+#define SERV_4_RUN RunMoveServosService
 // How big should this services Queue be?
 #define SERV_4_QUEUE_SIZE 3
 #endif
@@ -109,11 +109,11 @@
 // These are the definitions for Service 5
 #if NUM_SERVICES > 5
 // the header file with the public function prototypes
-#define SERV_5_HEADER "TestHarnessService5.h"
+#define SERV_5_HEADER "DisplayService.h"
 // the name of the Init function
-#define SERV_5_INIT InitTestHarnessService5
+#define SERV_5_INIT InitDisplayService
 // the name of the run function
-#define SERV_5_RUN RunTestHarnessService5
+#define SERV_5_RUN RunDisplayService
 // How big should this services Queue be?
 #define SERV_5_QUEUE_SIZE 3
 #endif
@@ -274,6 +274,8 @@ typedef enum
   ES_WELCOME_DISPLAY, 
   ES_POINT_DISPLAY, 
   ES_GAME_OVER,
+  ES_INIT_SERVOS, 
+  ES_TIMEOUT_SERVOS, 
   ES_SHOT 
 }ES_EventType_t;
 
@@ -333,7 +335,7 @@ typedef enum
 #define TIMER11_RESP_FUNC TIMER_UNUSED
 #define TIMER12_RESP_FUNC TIMER_UNUSED
 #define TIMER13_RESP_FUNC TIMER_UNUSED
-#define TIMER14_RESP_FUNC TIMER_UNUSED //PostTestHarnessService0
+#define TIMER14_RESP_FUNC PostGhostHuntFSM //PostTestHarnessService0
 #define TIMER15_RESP_FUNC PostGhostHuntFSM
 
 /****************************************************************************/
@@ -344,7 +346,8 @@ typedef enum
 // These symbolic names should be changed to be relevant to your application
 
 //#define SERVICE0_TIMER 14
-#define SERVICE0_TIMER 15
+#define SERVICE0_TIMER 15 
+#define SERVICE1_TIMER 14
 
 
 #endif /* ES_CONFIGURE_H */

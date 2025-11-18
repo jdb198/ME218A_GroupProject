@@ -117,16 +117,16 @@ ES_Event_t RunDisplayService(ES_Event_t ThisEvent)
 {
   ES_Event_t ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
-  if (ThisEvent.EventType = ES_WELCOME_DISPLAY){ 
+  if (ThisEvent.EventType == ES_WELCOME_DISPLAY){ 
     // Display #1 that says welcome and game over
     DB_printf("Print Welcome on the Display\n");
     /* AYTAN ADD DISPLAY HERE */
-  } else if (ThisEvent.EventType = ES_POINT_DISPLAY){
+  } else if (ThisEvent.EventType == ES_POINT_DISPLAY){
     // Display #2 that displays points 
     DB_printf("Points printed on display %d \n", ThisEvent.EventParam); 
     /* AYTAN ADD DISPLAY HERE*/
 
-  } else if (ThisEvent.EventType = ES_GAME_OVER){
+  } else if (ThisEvent.EventType == ES_GAME_OVER){
     // Display #1 that says welcome and game over
     DB_printf("Print GameOver on Display \n"); 
     /* AYTAN ADD DISPLAY HERE */

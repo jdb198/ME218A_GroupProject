@@ -154,10 +154,14 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
   {
       case ES_INIT: // If current state is initial Psedudo State
     {
-        DB_printf("WELCOME \n");
-        DB_printf("You are waiting for an input \n");
+//        DB_printf("WELCOME \n");
+//        DB_printf("You are waiting for an input \n");
+        ThisEvent.EventType = ES_WELCOME_DISPLAY;
         DB_printf("Timer started \n");
+        ES_Timer_InitTimer(SERVICE1_TIMER, FIVE_SEC);
+        DB_printf("Servo Timer Started \n");
         ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC);
+        PostDisplayService(ThisEvent);
   
     }
     break;
@@ -165,6 +169,8 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
     case ES_POWER_UP:        // If current state is state one
     {
         DB_printf("You hit the Power up Button \n");
+        ThisEvent.EventType = ES_CHECK_FOR_POWER_UP;
+        PostPointsService(ES_CHECK_FOR_POWER_UP);
         break;
 
     }
@@ -178,22 +184,6 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
         break;
     }
     break;
-    
-    // case ES_NEW_KEY:        // If current state is state one
-    // {
-    //     if (ThisEvent.EventParam == 's'){
-    //         // example of someone taking a shot. 
-    //         DB_printf("You took a shot \n"); 
-            
-    //         //post to shot service to determine if missed or made
-    //     } else if (ThisEvent.EventParam == 'p') {
-    //         //this represents the power up button being shot
-    //         DB_printf("You hit the power up button \n");
-    //         //check for enough points hit in a row. 
-        
-    //     break;
-    // }
-    // break;
     
     case ES_SOUND:        // If current state is state one
     {
@@ -209,11 +199,17 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
     case ES_TIMEOUT:        // If current state is state one
     {
             // ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC);
-            
-            ThisEvent.EventType = ES_GAME_OVER;
-            PostDisplayService(ThisEvent); 
-            PostPointsService(ThisEvent);
-            // DB_printf("GameOver \n");
+        if (ThisEvent.EventParam == SERVICE0_TIMER){
+                ThisEvent.EventType = ES_GAME_OVER;
+                PostDisplayService(ThisEvent); 
+                PostPointsService(ThisEvent);
+                // DB_printf("GameOver \n");}
+        } else if (ThisEvent.EventParam == SERVICE1_TIMER){
+            ES_Timer_InitTimer(SERVICE1_TIMER, FIVE_SEC);
+            ThisEvent.EventType = ES_GHOST_TIMER;
+            PostMoveServosService(ThisEvent);
+            DB_printf("5 second timer \n");
+        }
         break;
     }
     break;

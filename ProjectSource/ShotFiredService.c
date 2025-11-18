@@ -148,7 +148,8 @@ void CheckForShotReceived(void)
         if(DummyShots[ShotNum] == 1){
             DB_printf("You hit the ghost! \n");
             ShotNum++;
-            ThisEvent.EventType = ES_CHECK_FOR_POWER_UP;
+            ThisEvent.EventParam = 0;
+            ThisEvent.EventType = ES_ADD_POINTS;
             PostPointsService(ThisEvent); 
         } else{
             ShotNum++; 

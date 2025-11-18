@@ -52,6 +52,8 @@
       <itemPath>ProjectHeaders/ShotFiredService.h</itemPath>
       <itemPath>ProjectHeaders/PWM_PIC32.h</itemPath>
       <itemPath>ProjectHeaders/PIC32_AD_Lib.h</itemPath>
+      <itemPath>ProjectHeaders/MoveServosService.h</itemPath>
+      <itemPath>ProjectHeaders/SoundService.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -72,6 +74,8 @@
       <itemPath>ProjectSource/PWM_PIC32.c</itemPath>
       <itemPath>ProjectSource/PIC32_AD_Lib.c</itemPath>
       <itemPath>ProjectSource/MoveServosService.c</itemPath>
+      <itemPath>ProjectSource/DisplayService.c</itemPath>
+      <itemPath>ProjectSource/SoundService.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

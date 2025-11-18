@@ -35,6 +35,7 @@
 // with the introduction of Gen2, we need a module level Priority variable
 static uint8_t MyPriority;
 static int TotalPoints = 0; 
+static int Num_Hits = 0;
 
 
 /*------------------------------ Module Code ------------------------------*/
@@ -124,10 +125,13 @@ ES_Event_t RunPointsService(ES_Event_t ThisEvent)
       
       if (ThisEvent.EventParam == 1){
           TotalPoints = TotalPoints + 4;
+          Num_Hits = 0;
       }else {
           TotalPoints = TotalPoints + 2;
+          Num_Hits++;
       }
       // DB_printf("Total Points %d \n", TotalPoints);
+       
       ThisEvent.EventType = ES_POINT_DISPLAY; 
       ThisEvent.EventParam = TotalPoints; 
       PostDisplayService(ThisEvent); 
@@ -141,6 +145,7 @@ ES_Event_t RunPointsService(ES_Event_t ThisEvent)
           TotalPoints = TotalPoints - ThisEvent.EventParam;
       }
       // DB_printf("Total Points %d \n", TotalPoints);
+      Num_Hits = 0;
       ThisEvent.EventType = ES_POINT_DISPLAY; 
       ThisEvent.EventParam = TotalPoints; 
       PostDisplayService(ThisEvent); 
@@ -150,13 +155,14 @@ ES_Event_t RunPointsService(ES_Event_t ThisEvent)
       ThisEvent.EventParam = TotalPoints; 
       PostMoveServosService(ThisEvent);
       TotalPoints = 0; 
+      Num_Hits = 0; 
       ThisEvent.EventType = ES_POINT_DISPLAY; 
       ThisEvent.EventParam = TotalPoints; 
       PostDisplayService(ThisEvent); 
 
 
   } else if (ThisEvent.EventType == ES_CHECK_FOR_POWER_UP){
-      CheckPowerUpButton();
+      CheckPowerUpButton(Num_Hits);
 
       
   } else if (ThisEvent.EventType == ES_SUBTRACT_POINTS){
@@ -168,6 +174,7 @@ ES_Event_t RunPointsService(ES_Event_t ThisEvent)
           TotalPoints = TotalPoints - 3;
       }
       // DB_printf("Total Points %d \n", TotalPoints);
+      Num_Hits = 0;
       ThisEvent.EventType = ES_POINT_DISPLAY; 
       ThisEvent.EventParam = TotalPoints; 
       PostDisplayService(ThisEvent); 
@@ -179,22 +186,16 @@ ES_Event_t RunPointsService(ES_Event_t ThisEvent)
 /***************************************************************************
  private functions
  ***************************************************************************/
-void CheckPowerUpButton(){
+void CheckPowerUpButton(int Number_of_Hits_In_A_Row){
     ES_Event_t ThisEvent;
-    int pressed = 0; /* In Actuality call from PIC */
     
-    if (pressed == 1){
+    
+    if (Num_Hits > 3){
         DB_printf("You got a power up \n");
         ThisEvent.EventParam = 1; 
         ThisEvent.EventType = ES_ADD_POINTS; 
         PostPointsService(ThisEvent); 
-    } else {
-        DB_printf("Booo no extra points for you \n");
-        ThisEvent.EventParam = 0;
-        ThisEvent.EventType = ES_ADD_POINTS;         
-        PostPointsService(ThisEvent); 
     }
-   
     return;
 }
 

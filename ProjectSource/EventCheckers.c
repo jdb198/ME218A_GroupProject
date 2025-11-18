@@ -133,15 +133,12 @@ bool Check4PowerUp(void)
     uint16_t InitTime = ES_Timer_GetTime();
     
     if (CurrentPowerUpState == 0) {
-//        DB_printf("THe delta time is %d \n", ES_Timer_GetTime() - InitTime);
-//        for (int i=0; i < 10000000; i++){} 
-        if ((ES_Timer_GetTime() - InitTime) < 5 && (ES_Timer_GetTime() - InitTime) > -5){ // debounce
-            if (PORTAbits.RA3 == 1){
+        for (int i=0; i < 100; i++){} // delay bounce
+        if (PORTAbits.RA3 == 1){
                 ThisEvent.EventType = ES_POWER_UP;
                 ThisEvent.EventParam = PORTAbits.RA3;
                 PostGhostHuntFSM(ThisEvent); 
                 ReturnVal = true;
-            }
         }
     }
     CurrentPowerUpState = LastPowerUpState; 
@@ -155,7 +152,6 @@ bool Check4Shot(void)
     uint32_t CurrentShotState = PORTBbits.RB2;
     uint32_t LastShotState = 0; 
     if(CurrentShotState == 0){
-//        if ((ES_Timer_GetTime() - InitTime) > 2.0){ // debounce
         for (int i=0; i < 100; i++){} // delay bounce
         if (PORTBbits.RB2 == 1){
             ThisEvent.EventType = ES_SHOT;

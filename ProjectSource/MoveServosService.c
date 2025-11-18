@@ -35,6 +35,12 @@
 // with the introduction of Gen2, we need a module level Priority variable
 static uint8_t MyPriority;
 
+#define ONE_SEC 1000
+#define HALF_SEC (ONE_SEC / 2)
+#define TWO_SEC (ONE_SEC * 2)
+#define FIVE_SEC (ONE_SEC * 5)
+#define SIXTY_SEC (ONE_SEC * 60)
+
 /*------------------------------ Module Code ------------------------------*/
 /****************************************************************************
  Function
@@ -63,7 +69,7 @@ bool InitMoveServosService(uint8_t Priority)
    in here you write your initialization code
    *******************************************/
   // post the initial transition event
-  ThisEvent.EventType = ES_INIT;
+  ThisEvent.EventType = ES_INIT_SERVOS;
   if (ES_PostToService(MyPriority, ThisEvent) == true)
   {
     return true;
@@ -117,19 +123,44 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
 {
   ES_Event_t ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
-  if (ThisEvent.EventType == ES_GHOST_JERK){
-    DB_printf("The ghost has moved out of fright \n");
+
+  switch (ThisEvent.EventType)
+  {
+    case ES_WELCOME_DISPLAY:        // If current state is initial Psedudo State
+    {}
+    break;
+
+    case ES_GHOST_JERK:        // If current state is state one
+    {
+        DB_printf("The ghost has moved out of fright \n");
     /* AYTAN ADD CODE HERE */
-  } else if (ThisEvent.EventType == ES_GHOST_TIMER){
-      DB_printf("The ghost has moved after 5 seconds");
+
+    }
+    break;
+    
+    case ES_GHOST_TIMER:        // If current state is state one
+    {
+        DB_printf("The ghost has moved after 5 seconds");
       /* AYTAN ADD CODE HERE */
-  } else if (ThisEvent.EventType == ES_GAME_OVER){
-    uint32_t NumPointsWon = ThisEvent.EventParam;
-    DB_printf("Dispense the total number of gears depending on the total points")
+
+    }
+    break;
+    
+    case ES_GAME_OVER:        // If current state is state one
+    {
+        DB_printf("Dispense the total number of gears depending on the total points");
     /* AYTAN ADD CODE HERE */
-  }
+    }
+    break;
+
+    // repeat state pattern as required for other states
+     default:
+    {}
+     break;
+  }                                  // end switch on Current State
   return ReturnEvent;
 }
+
 
 /***************************************************************************
  private functions
