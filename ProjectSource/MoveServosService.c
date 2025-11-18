@@ -140,7 +140,7 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
     
     case ES_GHOST_TIMER:        // If current state is state one
     {
-        DB_printf("The ghost has moved after 5 seconds");
+        DB_printf("The ghost has moved after 5 seconds \n");
       /* AYTAN ADD CODE HERE */
 
     }
@@ -148,7 +148,7 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
     
     case ES_GAME_OVER:        // If current state is state one
     {
-        DB_printf("Dispense the total number of gears depending on the total points");
+        DB_printf("Dispense the total number of gears depending on the total points \n");
     /* AYTAN ADD CODE HERE */
     }
     break;

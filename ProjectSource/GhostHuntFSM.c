@@ -208,7 +208,7 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
             ES_Timer_InitTimer(SERVICE1_TIMER, FIVE_SEC);
             ThisEvent.EventType = ES_GHOST_TIMER;
             PostMoveServosService(ThisEvent);
-            DB_printf("5 second timer \n");
+//            DB_printf("5 second timer \n");
         }
         break;
     }
