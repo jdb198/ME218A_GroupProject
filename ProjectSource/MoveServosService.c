@@ -151,9 +151,9 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
     case ES_GHOST_JERK:        // If current state is state one
     {
         DB_printf("The ghost has moved out of fright \n");
-        int32_t down_ticks = 1750;
-        PWMOperate_SetPulseWidthOnChannel(down_ticks, 1);
-        PWMOperate_SetPulseWidthOnChannel(down_ticks, 2);
+//        int32_t down_ticks = 1750;
+//        PWMOperate_SetPulseWidthOnChannel(down_ticks, 1);
+//        PWMOperate_SetPulseWidthOnChannel(down_ticks, 2);
     /* AYTAN ADD CODE HERE */
 
     }
@@ -163,11 +163,11 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
     {
         DB_printf("The ghost has moved after 5 seconds \n");
       //srand(12345);   // seed random generator
-        uint32_t pulse1 = random_angle_to_pulsewidth();
-        uint32_t pulse2 = random_angle_to_pulsewidth();
-
-        PWMOperate_SetPulseWidthOnChannel(pulse1, 1);
-        PWMOperate_SetPulseWidthOnChannel(pulse2, 2);
+//        uint32_t pulse1 = random_angle_to_pulsewidth();
+//        uint32_t pulse2 = random_angle_to_pulsewidth();
+//
+//        PWMOperate_SetPulseWidthOnChannel(pulse1, 1);
+//        PWMOperate_SetPulseWidthOnChannel(pulse2, 2);
 
     }
     break;

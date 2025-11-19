@@ -23,7 +23,7 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "DisplayService.h"
-#include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 /*----------------------------- Module Defines ----------------------------*/
 
@@ -113,13 +113,16 @@ bool PostDisplayService(ES_Event_t ThisEvent) {
 ES_Event_t RunDisplayService(ES_Event_t ThisEvent) {
     ES_Event_t ReturnEvent;
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
-
+//    if (ThisEvent.EventType == ES_INIT){
+//          while (false == DM_TakeInitDisplayStep()){}
+//
+//    }
     if (ThisEvent.EventType == ES_WELCOME_DISPLAY) {
         
         static const char welcome[] = "WELCOME";
 
         for (int i = 0; i < strlen(welcome); i++) {
-
+          
             ThisEvent.EventType = ES_LED_CHAR;
             ThisEvent.EventParam = welcome[i]; // 
             PostLEDService(ThisEvent);
@@ -140,16 +143,16 @@ ES_Event_t RunDisplayService(ES_Event_t ThisEvent) {
     } else if (ThisEvent.EventType == ES_GAME_OVER) {
       
         static const char gameover[] = "GAMEOVER";
-        DM_ClearDisplayBuffer();
+        DM_ClearDisplayBuffer(); // calling dm display functions from outside the led service coudl be bad
         for (int i = 0; i < strlen(gameover); i++) {
             ThisEvent.EventType = ES_LED_CHAR;
             ThisEvent.EventParam = gameover[i]; // 
             PostLEDService(ThisEvent);
         }
 
-        return ReturnEvent;
+        //return ReturnEvent;
     }
-
+return ReturnEvent;
 
 }
 
