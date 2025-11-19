@@ -23,6 +23,7 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "DisplayService.h"
+#include <stdint.h>
 
 /*----------------------------- Module Defines ----------------------------*/
 
@@ -117,22 +118,83 @@ ES_Event_t RunDisplayService(ES_Event_t ThisEvent)
 {
   ES_Event_t ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
+  //if (ThisEvent.EventType == ES_WELCOME_DISPLAY){ 
   if (ThisEvent.EventType == ES_WELCOME_DISPLAY){ 
     // Display #1 that says welcome and game over
     DB_printf("Print Welcome on the Display\n");
+    static uint8_t idx=0;
+    static const char welcome[] = " WELCOME ";
+    DM_ScrollDisplayBuffer(4);
+    DM_AddChar2DisplayBuffer((uint8_t)welcome[idx]);  
+    
+    if(DM_TakeDisplayUpdateStep()== false){
+        
+        idx++;
+    if (idx < sizeof(welcome) - 1) { // -1 to ignore '\0'
+        // Post ONE more event to continue later
+        ES_Event_t EventWelcome;
+        EventWelcome.EventType = ES_WELCOME_DISPLAY;
+        EventWelcome.EventParam = 0; // not used now
+        PostDisplayService(EventWelcome);
+    } else {
+        // Finished the word, reset if you want to reuse later
+        idx = 0;
+    }
+        
+     
+         }
+ 
+    //initalize display 1
+    //print to display 1]
+  } 
+    
     /* AYTAN ADD DISPLAY HERE */
-  } else if (ThisEvent.EventType == ES_POINT_DISPLAY){
+  
+    //initalize display 1
+    //print to display 1]
+    
+    
+    /* AYTAN ADD DISPLAY HERE */
+ 
+  else if (ThisEvent.EventType == ES_POINT_DISPLAY){
     // Display #2 that displays points 
     DB_printf("Points printed on display %d \n", ThisEvent.EventParam); 
     /* AYTAN ADD DISPLAY HERE*/
+    
+    //initalize display 2
+    //print to display 2
+    
 
   } else if (ThisEvent.EventType == ES_GAME_OVER){
     // Display #1 that says welcome and game over
     DB_printf("Print GameOver on Display \n"); 
     /* AYTAN ADD DISPLAY HERE */
+    static uint8_t idxx=0;
+    static const char gameover[] = " GAME OVER ";
+    DM_ScrollDisplayBuffer(4);
+    DM_AddChar2DisplayBuffer((uint8_t)gameover[idxx]);  
+    
+    if(DM_TakeDisplayUpdateStep()== false){
+        
+        idxx++;
+    if (idxx < sizeof(gameover) - 1) { // -1 to ignore '\0'
+        // Post ONE more event to continue later
+        ES_Event_t EventGameOver;
+        EventGameOver.EventType = ES_WELCOME_DISPLAY;
+        EventGameOver.EventParam = 0; // not used now
+        PostDisplayService(EventGameOver);
+    } else {
+        // Finished the word, reset if you want to reuse later
+        idxx = 0;
+    }
+        
+     
+         }
+    return ReturnEvent;
   }
-  return ReturnEvent;
-}
+  
+  
+  }
 
 /***************************************************************************
  private functions
