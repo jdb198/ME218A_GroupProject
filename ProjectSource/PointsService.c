@@ -124,13 +124,13 @@ ES_Event_t RunPointsService(ES_Event_t ThisEvent)
   if (ThisEvent.EventType == ES_ADD_POINTS){
       
       if (ThisEvent.EventParam == 1){
-          TotalPoints = TotalPoints + 4;
+          TotalPoints = TotalPoints + 15;
           Num_Hits = 0;
       }else {
-          TotalPoints = TotalPoints + 2;
+          TotalPoints = TotalPoints + 10;
           Num_Hits++;
       }
-      // DB_printf("Total Points %d \n", TotalPoints);
+       DB_printf("Total Points %d \n", TotalPoints);
        
       ThisEvent.EventType = ES_POINT_DISPLAY; 
       ThisEvent.EventParam = TotalPoints; 
@@ -144,22 +144,11 @@ ES_Event_t RunPointsService(ES_Event_t ThisEvent)
       } else {
           TotalPoints = TotalPoints - ThisEvent.EventParam;
       }
-      // DB_printf("Total Points %d \n", TotalPoints);
+       DB_printf("Total Points %d \n", TotalPoints);
       Num_Hits = 0;
       ThisEvent.EventType = ES_POINT_DISPLAY; 
       ThisEvent.EventParam = TotalPoints; 
       PostDisplayService(ThisEvent); 
-
-  } else if (ThisEvent.EventType == ES_GAME_OVER){
-    //post thte number of tokens to the move servos so that that can dictate the number of gears
-      ThisEvent.EventParam = TotalPoints; 
-      PostMoveServosService(ThisEvent);
-      TotalPoints = 0; 
-      Num_Hits = 0; 
-      ThisEvent.EventType = ES_POINT_DISPLAY; 
-      ThisEvent.EventParam = TotalPoints; 
-      PostDisplayService(ThisEvent); 
-
 
   } else if (ThisEvent.EventType == ES_CHECK_FOR_POWER_UP){
       CheckPowerUpButton(Num_Hits);
@@ -173,7 +162,7 @@ ES_Event_t RunPointsService(ES_Event_t ThisEvent)
       } else {
           TotalPoints = TotalPoints - 3;
       }
-      // DB_printf("Total Points %d \n", TotalPoints);
+       DB_printf("Total Points %d \n", TotalPoints);
       Num_Hits = 0;
       ThisEvent.EventType = ES_POINT_DISPLAY; 
       ThisEvent.EventParam = TotalPoints; 

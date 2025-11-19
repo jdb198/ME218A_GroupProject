@@ -31,6 +31,8 @@ void main(void)
 
   _HW_PIC32Init(); // basic PIC hardware init
   // Your hardware initialization function calls go here
+  ANSELBbits.ANSB14=0;
+  TRISBbits.TRISB14=0;
   SPISetup_BasicConfig(SPI_SPI1);
   SPISetup_SetLeader(SPI_SPI1, SPI_SMP_MID); 
   SPISetup_MapSSOutput(SPI_SPI1, SPI_RPA0); 

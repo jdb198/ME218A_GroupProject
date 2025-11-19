@@ -131,9 +131,9 @@ ES_Event_t RunDisplayService(ES_Event_t ThisEvent) {
 
     else if (ThisEvent.EventType == ES_POINT_DISPLAY) {
 
-        char NumAsStr[] = "000   ";
-        snprintf(NumAsStr, sizeof(NumAsStr), "%d   ", ThisEvent.EventParam);
-        DM_ClearDisplayBuffer();
+        char NumAsStr[] = "    0000   ";
+        snprintf(NumAsStr, sizeof(NumAsStr)-1, "    %d   ", ThisEvent.EventParam);
+//        DM_ClearDisplayBuffer();
         for (int i = 0; i <strlen(NumAsStr); i++){
             ThisEvent.EventType = ES_LED_CHAR;
             ThisEvent.EventParam = NumAsStr[i]; // 
@@ -143,7 +143,7 @@ ES_Event_t RunDisplayService(ES_Event_t ThisEvent) {
     } else if (ThisEvent.EventType == ES_GAME_OVER) {
       
         static const char gameover[] = "GAMEOVER";
-        DM_ClearDisplayBuffer(); // calling dm display functions from outside the led service coudl be bad
+//        DM_ClearDisplayBuffer(); 
         for (int i = 0; i < strlen(gameover); i++) {
             ThisEvent.EventType = ES_LED_CHAR;
             ThisEvent.EventParam = gameover[i]; // 

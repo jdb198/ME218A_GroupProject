@@ -170,6 +170,10 @@ bool Check4Sound(void)
 {
     bool ReturnVal = false; 
     ES_Event_t ThisEvent; 
+    static uint16_t LastTime = 0; 
+    uint16_t NowTime = ES_Timer_GetTime();
+    
+//    if (NowTime - LastTime > 100)
     
 //    ADC_ConfigAutoScan(BIT13HI);
     uint32_t ConversionResults[1];
@@ -178,7 +182,7 @@ bool Check4Sound(void)
    
     uint32_t CurrentSound = ConversionResults[0];
     
-    if((CurrentSound) > 600){
+    if((CurrentSound) > 600 && (NowTime- LastTime) > 100){
         float SendVal = CurrentSound/100;
         SendVal = (int)SendVal;
 
@@ -186,7 +190,8 @@ bool Check4Sound(void)
         ThisEvent.EventParam = SendVal; 
         PostGhostHuntFSM(ThisEvent);
         ReturnVal = true;
-        for (int i=0; i < 100000; i++){} // delay bounce
+        LastTime = NowTime;
+//        for (int i=0; i < 100000; i++){} // delay bounce
     }
     return ReturnVal; 
 }

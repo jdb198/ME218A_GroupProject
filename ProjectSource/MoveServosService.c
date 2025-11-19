@@ -74,19 +74,12 @@ bool InitMoveServosService(uint8_t Priority)
   ES_Event_t ThisEvent;
 
   MyPriority = Priority;
-  
-  PWMSetup_BasicConfig(4);
-  PWMSetup_MapChannelToOutputPin(1, PWM_RPB3);
-  PWMSetup_MapChannelToOutputPin(2, PWM_RPB8);
-  PWMSetup_AssignChannelToTimer(1, _Timer2_);
-  PWMSetup_AssignChannelToTimer(2, _Timer2_);
-  PWMSetup_SetFreqOnTimer(50, _Timer2_);  // 50 Hz servo frequency
-  PWMOperate_SetDutyOnChannel(50, 1);
-  PWMOperate_SetDutyOnChannel(50, 2);
   /********************************************
    in here you write your initialization code
    *******************************************/
   // post the initial transition event
+  srand(12345);   // seed random generator
+  
   ThisEvent.EventType = ES_INIT_SERVOS;
   if (ES_PostToService(MyPriority, ThisEvent) == true)
   {
@@ -151,9 +144,9 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
     case ES_GHOST_JERK:        // If current state is state one
     {
         DB_printf("The ghost has moved out of fright \n");
-//        int32_t down_ticks = 1750;
-//        PWMOperate_SetPulseWidthOnChannel(down_ticks, 1);
-//        PWMOperate_SetPulseWidthOnChannel(down_ticks, 2);
+        int32_t down_ticks = 1750;
+        PWMOperate_SetPulseWidthOnChannel(down_ticks, 1);
+        PWMOperate_SetPulseWidthOnChannel(down_ticks, 2);
     /* AYTAN ADD CODE HERE */
 
     }
@@ -162,12 +155,13 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
     case ES_GHOST_TIMER:        // If current state is state one
     {
         DB_printf("The ghost has moved after 5 seconds \n");
-      //srand(12345);   // seed random generator
-//        uint32_t pulse1 = random_angle_to_pulsewidth();
-//        uint32_t pulse2 = random_angle_to_pulsewidth();
-//
-//        PWMOperate_SetPulseWidthOnChannel(pulse1, 1);
-//        PWMOperate_SetPulseWidthOnChannel(pulse2, 2);
+      
+        uint32_t pulse1 = random_angle_to_pulsewidth();
+        uint32_t pulse2 = random_angle_to_pulsewidth();
+
+        PWMOperate_SetPulseWidthOnChannel(pulse1, 1);
+        PWMOperate_SetPulseWidthOnChannel(pulse2, 2);
+        DB_printf("Pulse 1 %d Pulse 2 %d \n", pulse1, pulse2);
 
     }
     break;

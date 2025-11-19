@@ -161,7 +161,7 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
         DB_printf("Timer started \n");
         ES_Timer_InitTimer(SERVICE1_TIMER, FIVE_SEC);
         DB_printf("Servo Timer Started \n");
-        ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC); // change this to 60
+        ES_Timer_InitTimer(SERVICE0_TIMER, TEN_SEC); // change this to 60
         PostDisplayService(ThisEvent);
   
     }
@@ -310,7 +310,7 @@ void InitServos(void)
     TRISBbits.TRISB8 = 0;
     LATBbits.LATB8 = 1; 
     
-    PWMSetup_BasicConfig(4);
+    PWMSetup_BasicConfig(2);
     PWMSetup_MapChannelToOutputPin(1, PWM_RPB3);
     PWMSetup_MapChannelToOutputPin(2, PWM_RPB8);
     PWMSetup_AssignChannelToTimer(1, _Timer2_);
