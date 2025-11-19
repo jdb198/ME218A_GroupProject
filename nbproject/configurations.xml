@@ -54,6 +54,7 @@
       <itemPath>ProjectHeaders/PIC32_AD_Lib.h</itemPath>
       <itemPath>ProjectHeaders/MoveServosService.h</itemPath>
       <itemPath>ProjectHeaders/SoundService.h</itemPath>
+      <itemPath>ProjectHeaders/LEDService.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -76,6 +77,7 @@
       <itemPath>ProjectSource/MoveServosService.c</itemPath>
       <itemPath>ProjectSource/DisplayService.c</itemPath>
       <itemPath>ProjectSource/SoundService.c</itemPath>
+      <itemPath>ProjectSource/LEDService.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

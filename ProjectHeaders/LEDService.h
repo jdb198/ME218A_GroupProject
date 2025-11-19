@@ -5,16 +5,21 @@
 
  ****************************************************************************/
 
-#ifndef ServTemplate_H
-#define ServTemplate_H
+#ifndef LEDService_H
+#define LEDService_H
 
 #include "ES_Types.h"
 
-// Public Function Prototypes
+// Public Function Prototype
+typedef enum
+{
+    LED_Idle, LED_Update
+}LEDService_t;
 
-bool InitTemplateService(uint8_t Priority);
-bool PostTemplateService(ES_Event_t ThisEvent);
-ES_Event_t RunTemplateService(ES_Event_t ThisEvent);
+
+bool InitLEDService(uint8_t Priority);
+bool PostLEDService(ES_Event_t ThisEvent);
+ES_Event_t RunLEDService(ES_Event_t ThisEvent);
 
 #endif /* ServTemplate_H */
 

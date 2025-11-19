@@ -44,7 +44,7 @@ void main(void)
   SPISetup_EnableSPI(SPI_SPI1);
   SPI1BUF; //reset the buffer 
     
-//  while (false == DM_TakeInitDisplayStep()){}
+  while (false == DM_TakeInitDisplayStep()){}
 
 
   // now initialize the Events and Services Framework and start it running

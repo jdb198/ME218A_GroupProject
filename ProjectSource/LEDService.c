@@ -22,9 +22,9 @@
  */
 #include "ES_Configure.h"
 #include "ES_Framework.h"
-#include "DisplayService.h"
-#include <stdint.h>
-#include <string.h>
+#include "LEDService.h"
+#include "ES_DeferRecall.h"
+
 /*----------------------------- Module Defines ----------------------------*/
 
 /*---------------------------- Module Functions ---------------------------*/
@@ -35,6 +35,9 @@
 /*---------------------------- Module Variables ---------------------------*/
 // with the introduction of Gen2, we need a module level Priority variable
 static uint8_t MyPriority;
+
+static ES_Event_t DeferralQueue[9 + 1];
+static LEDService_t CurrentState;
 
 /*------------------------------ Module Code ------------------------------*/
 
@@ -55,8 +58,13 @@ static uint8_t MyPriority;
 
  Author
      J. Edward Carryer, 01/16/12, 10:00
- ****************************************************************************/
-bool InitDisplayService(uint8_t Priority) {
+ * 
+ * 
+ * 
+ ***************************************************************************/
+
+
+bool InitLEDService(uint8_t Priority) {
     ES_Event_t ThisEvent;
 
     MyPriority = Priority;
@@ -64,7 +72,10 @@ bool InitDisplayService(uint8_t Priority) {
      in here you write your initialization code
      *******************************************/
     // post the initial transition event
+    ES_InitDeferralQueueWith(DeferralQueue, ARRAY_SIZE(DeferralQueue));
+    CurrentState = LED_Idle;
     ThisEvent.EventType = ES_INIT;
+    
     if (ES_PostToService(MyPriority, ThisEvent) == true) {
         return true;
     } else {
@@ -89,7 +100,7 @@ bool InitDisplayService(uint8_t Priority) {
  Author
      J. Edward Carryer, 10/23/11, 19:25
  ****************************************************************************/
-bool PostDisplayService(ES_Event_t ThisEvent) {
+bool PostLEDService(ES_Event_t ThisEvent) {
     return ES_PostToService(MyPriority, ThisEvent);
 }
 
@@ -110,47 +121,54 @@ bool PostDisplayService(ES_Event_t ThisEvent) {
  Author
    J. Edward Carryer, 01/15/12, 15:23
  ****************************************************************************/
-ES_Event_t RunDisplayService(ES_Event_t ThisEvent) {
+ES_Event_t RunLEDService(ES_Event_t ThisEvent) {
     ES_Event_t ReturnEvent;
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
 
-    if (ThisEvent.EventType == ES_WELCOME_DISPLAY) {
-        
-        static const char welcome[] = "WELCOME";
+    switch (CurrentState) {
+        case LED_Idle:
+        {
+            switch (ThisEvent.EventType) {
+                case ES_LED_CHAR: // If current state is initial Psedudo State
+                {
+                    DM_ScrollDisplayBuffer(4);
+                    DM_AddChar2DisplayBuffer(ThisEvent.EventParam);
+                    ThisEvent.EventType = ES_UPDATE_DISPLAY;
+                    CurrentState = LED_Update;
+                    PostLEDService(ThisEvent);
+                }
+                break;
+            }
+        } break; 
 
-        for (int i = 0; i < strlen(welcome); i++) {
-
-            ThisEvent.EventType = ES_LED_CHAR;
-            ThisEvent.EventParam = welcome[i]; // 
-            PostLEDService(ThisEvent);
-        }
+        case LED_Update:
+        {
+            switch (ThisEvent.EventType) {
+                case ES_UPDATE_DISPLAY: // If current state is initial Psedudo State
+                {
+                    if (false == DM_TakeDisplayUpdateStep()){
+                       // display update step is still going 
+                        PostLEDService(ThisEvent);
+                    } else{ 
+                        CurrentState = LED_Idle;
+                        ES_RecallEvents(MyPriority, DeferralQueue);
+                    }
+                } break; 
+                case ES_LED_CHAR:
+                {
+                    ES_DeferEvent(DeferralQueue, ThisEvent);
+                    
+                }
+                break;
+            }
+        } break;
+            // repeat state pattern as required for other states
     }
-
-    else if (ThisEvent.EventType == ES_POINT_DISPLAY) {
-
-        char NumAsStr[] = "000   ";
-        snprintf(NumAsStr, sizeof(NumAsStr), "%d   ", ThisEvent.EventParam);
-        DM_ClearDisplayBuffer();
-        for (int i = 0; i <strlen(NumAsStr); i++){
-            ThisEvent.EventType = ES_LED_CHAR;
-            ThisEvent.EventParam = NumAsStr[i]; // 
-            PostLEDService(ThisEvent);
-        }
-
-    } else if (ThisEvent.EventType == ES_GAME_OVER) {
-      
-        static const char gameover[] = "GAMEOVER";
-        DM_ClearDisplayBuffer();
-        for (int i = 0; i < strlen(gameover); i++) {
-            ThisEvent.EventType = ES_LED_CHAR;
-            ThisEvent.EventParam = gameover[i]; // 
-            PostLEDService(ThisEvent);
-        }
-
-        return ReturnEvent;
-    }
-
-
+    
+    /********************************************
+     in here you write your service code
+     *******************************************/
+    return ReturnEvent;
 }
 
 /***************************************************************************

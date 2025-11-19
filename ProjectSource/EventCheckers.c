@@ -152,8 +152,10 @@ bool Check4Shot(void)
     uint32_t CurrentShotState = PORTBbits.RB2;
     uint32_t LastShotState = 0; 
     if(CurrentShotState == 0){
+        PWMOperate_SetDutyOnChannel(50, 4);
         for (int i=0; i < 100; i++){} // delay bounce
         if (PORTBbits.RB2 == 1){
+            PWMOperate_SetDutyOnChannel(0, 4); 
             ThisEvent.EventType = ES_SHOT;
             ThisEvent.EventParam = PORTBbits.RB2;
             PostGhostHuntFSM(ThisEvent);

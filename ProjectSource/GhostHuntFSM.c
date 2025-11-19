@@ -46,6 +46,7 @@ static GhostHuntFSM_t  NextState;
 #define HALF_SEC (ONE_SEC / 2)
 #define TWO_SEC (ONE_SEC * 2)
 #define FIVE_SEC (ONE_SEC * 5)
+#define TEN_SEC (ONE_SEC * 10)
 #define SIXTY_SEC (ONE_SEC * 60)
 
 #define PBCLK_RATE 20000000L
@@ -89,7 +90,7 @@ bool InitGhostHuntFSM(uint8_t Priority)
   InitShootButton();
 //  InitIREmitter(); 
   InitPowerUpButton(); 
-//  InitIRReciever(); 
+  InitIRReciever(); 
   InitMicrophone(); 
   
   uint32_t LastPowerUpState = 0;
@@ -160,7 +161,7 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
         DB_printf("Timer started \n");
         ES_Timer_InitTimer(SERVICE1_TIMER, FIVE_SEC);
         DB_printf("Servo Timer Started \n");
-        ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC);
+        ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC); // change this to 60
         PostDisplayService(ThisEvent);
   
     }
@@ -202,7 +203,7 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
         if (ThisEvent.EventParam == SERVICE0_TIMER){
                 ThisEvent.EventType = ES_GAME_OVER;
                 PostDisplayService(ThisEvent); 
-                PostPointsService(ThisEvent);
+//                PostPointsService(ThisEvent);
                 // DB_printf("GameOver \n");}
         } else if (ThisEvent.EventParam == SERVICE1_TIMER){
             ES_Timer_InitTimer(SERVICE1_TIMER, FIVE_SEC);
@@ -261,17 +262,24 @@ void InitPowerUpButton(void)
   // set up shooting button 
   TRISBbits.TRISB2 = 1; // set as input 
   uint32_t ShootButtonLastState = PORTBbits.RB2; 
+  
+  /* initialize PWM for shoot button */
+  // PWM channel used initialized in InitServos function
+  PWMSetup_MapChannelToOutputPin(4, PWM_RPA2);
+  PWMSetup_AssignChannelToTimer(4, _Timer3_);
+  PWMSetup_SetFreqOnTimer(4750, _Timer3_);        // Timer 3 is multiplied by 8 vs what the library is set to
+    
   DB_printf("Shoot button initialized \n");
 }
-//
-//void InitIRReciever(void)
-//{
-//    //set up IR Reciever 
-//    TRISAbits.TRISA4 = 1;   // make RA4 a digital input (IR receiver)
-//    uint32_t LastIRReceived = PORTAbits.RA4;
-//    DB_printf("IR receiver initialized \n");
-//  
-//}
+
+void InitIRReciever(void)
+{
+    //set up IR Receiver 
+    TRISAbits.TRISA4 = 1;   // make RA4 a digital input (IR receiver)
+    uint32_t LastIRReceived = PORTAbits.RA4;
+    DB_printf("IR receiver initialized \n");
+  
+}
 
 //void InitIREmitter(void)
 //{
@@ -302,14 +310,14 @@ void InitServos(void)
     TRISBbits.TRISB8 = 0;
     LATBbits.LATB8 = 1; 
     
-    PWMSetup_BasicConfig(2);
+    PWMSetup_BasicConfig(4);
     PWMSetup_MapChannelToOutputPin(1, PWM_RPB3);
     PWMSetup_MapChannelToOutputPin(2, PWM_RPB8);
     PWMSetup_AssignChannelToTimer(1, _Timer2_);
     PWMSetup_AssignChannelToTimer(2, _Timer2_);
     PWMSetup_SetFreqOnTimer(50, _Timer2_);  // 50 Hz servo frequency
-    PWMOperate_SetDutyOnChannel(50, 1);
-    PWMOperate_SetDutyOnChannel(50, 2);
+//    PWMOperate_SetDutyOnChannel(50, 1);
+//    PWMOperate_SetDutyOnChannel(50, 2);
     DB_printf("Servos initialized \n");
 }
 

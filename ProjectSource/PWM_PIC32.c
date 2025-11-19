@@ -145,7 +145,7 @@ bool PWMSetup_BasicConfig(uint8_t HowMany){
     T3CONbits.ON = 0;
     // base Timer3 on PBClk/8
     T3CONbits.TCS = 0;  // use PBClk as clock source    
-    T3CONbits.TCKPS = 0b011;  // divide by 8
+    T3CONbits.TCKPS = 0b000;  // divide by 1 [edited 25-11-18 to allow timer 3 to have 38 kHz frequency]
     PR3 = SERVO_PERIOD; // default to the servo rate, 50Hz
 
     // with the Timers configured, move to the PWM setup, 1 loop per channel
