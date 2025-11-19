@@ -23,6 +23,9 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "MoveServosService.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include "PWM_PIC32.h"
 
 /*----------------------------- Module Defines ----------------------------*/
 
@@ -34,12 +37,18 @@
 /*---------------------------- Module Variables ---------------------------*/
 // with the introduction of Gen2, we need a module level Priority variable
 static uint8_t MyPriority;
+uint32_t random_angle_to_pulsewidth();
+void delay_ms(uint32_t ms);
 
 #define ONE_SEC 1000
 #define HALF_SEC (ONE_SEC / 2)
 #define TWO_SEC (ONE_SEC * 2)
 #define FIVE_SEC (ONE_SEC * 5)
 #define SIXTY_SEC (ONE_SEC * 60)
+#define PBCLK_RATE 20000000L
+#define TIMER_DIV 8
+#define TICS_PER_MS 2500
+#define SERVO_PERIOD  (20*TICS_PER_MS)
 
 /*------------------------------ Module Code ------------------------------*/
 /****************************************************************************
@@ -65,6 +74,15 @@ bool InitMoveServosService(uint8_t Priority)
   ES_Event_t ThisEvent;
 
   MyPriority = Priority;
+  
+  PWMSetup_BasicConfig(4);
+  PWMSetup_MapChannelToOutputPin(1, PWM_RPB3);
+  PWMSetup_MapChannelToOutputPin(2, PWM_RPB8);
+  PWMSetup_AssignChannelToTimer(1, _Timer2_);
+  PWMSetup_AssignChannelToTimer(2, _Timer2_);
+  PWMSetup_SetFreqOnTimer(50, _Timer2_);  // 50 Hz servo frequency
+  PWMOperate_SetDutyOnChannel(50, 1);
+  PWMOperate_SetDutyOnChannel(50, 2);
   /********************************************
    in here you write your initialization code
    *******************************************/
@@ -133,6 +151,9 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
     case ES_GHOST_JERK:        // If current state is state one
     {
         DB_printf("The ghost has moved out of fright \n");
+        int32_t down_ticks = 1750;
+        PWMOperate_SetPulseWidthOnChannel(down_ticks, 1);
+        PWMOperate_SetPulseWidthOnChannel(down_ticks, 2);
     /* AYTAN ADD CODE HERE */
 
     }
@@ -141,7 +162,12 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
     case ES_GHOST_TIMER:        // If current state is state one
     {
         DB_printf("The ghost has moved after 5 seconds \n");
-      /* AYTAN ADD CODE HERE */
+      //srand(12345);   // seed random generator
+        uint32_t pulse1 = random_angle_to_pulsewidth();
+        uint32_t pulse2 = random_angle_to_pulsewidth();
+
+        PWMOperate_SetPulseWidthOnChannel(pulse1, 1);
+        PWMOperate_SetPulseWidthOnChannel(pulse2, 2);
 
     }
     break;
@@ -166,20 +192,23 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
  private functions
  ***************************************************************************/
 
-//uint32_t random_angle_to_pulsewidth()
-//{
-//   // delay_ms();
-//    uint32_t angle = rand() % 181;   // 0?180 degrees
-//
-//    // Desired pulse in microseconds
-//    uint32_t pulse_us = 700 + ((angle * (2400 - 700)) / 180);
-//
-//    // Convert ï¿½s -> timer ticks: TICS_PER_MS = 2500 ticks/ms
-//    // 1 ms = 1000 ï¿½s, so ticks = pulse_us * 2500 / 1000
-//    uint32_t pulse_ticks = (pulse_us * TICS_PER_MS) / 1000;
-//
-//    return pulse_ticks;
-//}
+
+
+
+uint32_t random_angle_to_pulsewidth()
+{
+   // delay_ms();
+    uint32_t angle = rand() % 181;   // 0?180 degrees
+
+    // Desired pulse in microseconds
+    uint32_t pulse_us = 700 + ((angle * (2400 - 700)) / 180);
+
+    // Convert µs -> timer ticks: TICS_PER_MS = 2500 ticks/ms
+    // 1 ms = 1000 µs, so ticks = pulse_us * 2500 / 1000
+    uint32_t pulse_ticks = (pulse_us * TICS_PER_MS) / 1000;
+
+    return pulse_ticks;
+}
 
 void delay_ms(uint32_t ms)
 {
