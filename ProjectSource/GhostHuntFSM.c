@@ -146,6 +146,7 @@ bool PostGhostHuntFSM(ES_Event_t ThisEvent)
  Author
    J. Edward Carryer, 01/15/12, 15:23
 ****************************************************************************/
+       
 ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
 {
   ES_Event_t ReturnEvent;

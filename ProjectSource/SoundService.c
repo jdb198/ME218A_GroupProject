@@ -15,27 +15,30 @@
  When           Who     What/Why
  -------------- ---     --------
  01/16/12 09:58 jec      began conversion from TemplateFSM.c
-****************************************************************************/
+ ****************************************************************************/
 /*----------------------------- Include Files -----------------------------*/
 /* include header files for this state machine as well as any machines at the
    next lower level in the hierarchy that are sub-machines to this machine
-*/
+ */
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "SoundService.h"
+
+
 
 /*----------------------------- Module Defines ----------------------------*/
 
 /*---------------------------- Module Functions ---------------------------*/
 /* prototypes for private functions for this service.They should be functions
    relevant to the behavior of this service
-*/
+ */
 
 /*---------------------------- Module Variables ---------------------------*/
 // with the introduction of Gen2, we need a module level Priority variable
 static uint8_t MyPriority;
 
 /*------------------------------ Module Code ------------------------------*/
+
 /****************************************************************************
  Function
      InitTemplateService
@@ -53,25 +56,27 @@ static uint8_t MyPriority;
 
  Author
      J. Edward Carryer, 01/16/12, 10:00
-****************************************************************************/
-bool InitSoundService(uint8_t Priority)
-{
-  ES_Event_t ThisEvent;
+ ****************************************************************************/
+bool InitSoundService(uint8_t Priority) {
+    ES_Event_t ThisEvent;
 
-  MyPriority = Priority;
-  /********************************************
-   in here you write your initialization code
-   *******************************************/
-  // post the initial transition event
-  ThisEvent.EventType = ES_INIT;
-  if (ES_PostToService(MyPriority, ThisEvent) == true)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+    MyPriority = Priority;
+
+    TRISBbits.TRISB9 = 0; // make RB9 an output
+    LATBbits.LATB9 = 1;
+    TRISBbits.TRISB5 = 0;
+    LATBbits.LATB5 = 1;
+
+    /********************************************
+     in here you write your initialization code
+     *******************************************/
+    // post the initial transition event
+    ThisEvent.EventType = ES_INIT;
+    if (ES_PostToService(MyPriority, ThisEvent) == true) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /****************************************************************************
@@ -90,10 +95,9 @@ bool InitSoundService(uint8_t Priority)
 
  Author
      J. Edward Carryer, 10/23/11, 19:25
-****************************************************************************/
-bool PostSoundService(ES_Event_t ThisEvent)
-{
-  return ES_PostToService(MyPriority, ThisEvent);
+ ****************************************************************************/
+bool PostSoundService(ES_Event_t ThisEvent) {
+    return ES_PostToService(MyPriority, ThisEvent);
 }
 
 /****************************************************************************
@@ -112,20 +116,34 @@ bool PostSoundService(ES_Event_t ThisEvent)
 
  Author
    J. Edward Carryer, 01/15/12, 15:23
-****************************************************************************/
-ES_Event_t RunSoundService(ES_Event_t ThisEvent)
-{
-  ES_Event_t ReturnEvent;
-  ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
-  if (ThisEvent.EventType == ES_GHOST_JERK){
-    DB_printf("The ghost made a scary sound \n"); 
-    /* AYTAN ADD SCARY GHOST NOISES HERE*/
-  } 
+ ****************************************************************************/
+ES_Event_t RunSoundService(ES_Event_t ThisEvent) {
 
-  /********************************************
-   in here you write your service code
-   *******************************************/
-  return ReturnEvent;
+
+
+
+
+    ES_Event_t ReturnEvent;
+    ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
+    if (ThisEvent.EventType == ES_GHOST_JERK) {
+        LATBbits.LATB5 = 0;
+        static uint16_t LastTime = 0;
+        DB_printf("The ghost made a scary sound \n");
+        uint16_t NowTime = ES_Timer_GetTime();
+
+        if ((NowTime - LastTime) > 100) {
+            LATBbits.LATB5 = 1;
+            LastTime = NowTime;
+        }
+
+    }
+
+
+
+    /********************************************
+     in here you write your service code
+     *******************************************/
+    return ReturnEvent;
 }
 
 /***************************************************************************
