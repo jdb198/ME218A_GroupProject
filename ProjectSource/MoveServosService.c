@@ -143,7 +143,7 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
 
     case ES_GHOST_JERK:        // If current state is state one
     {
-        DB_printf("The ghost has moved out of fright \n");
+//        DB_printf("The ghost has moved out of fright \n");
         int32_t down_ticks = 1750;
         PWMOperate_SetPulseWidthOnChannel(down_ticks, 1);
         PWMOperate_SetPulseWidthOnChannel(down_ticks, 2);
@@ -154,22 +154,29 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
     
     case ES_GHOST_TIMER:        // If current state is state one
     {
-        DB_printf("The ghost has moved after 5 seconds \n");
+//        DB_printf("The ghost has moved after 5 seconds \n");
       
         uint32_t pulse1 = random_angle_to_pulsewidth();
         uint32_t pulse2 = random_angle_to_pulsewidth();
 
         PWMOperate_SetPulseWidthOnChannel(pulse1, 1);
         PWMOperate_SetPulseWidthOnChannel(pulse2, 2);
-        DB_printf("Pulse 1 %d Pulse 2 %d \n", pulse1, pulse2);
+//        DB_printf("Pulse 1 %d Pulse 2 %d \n", pulse1, pulse2);
 
     }
     break;
     
     case ES_GAME_OVER:        // If current state is state one
     {
-        DB_printf("Dispense the total number of gears depending on the total points \n");
+//        DB_printf("Dispense the total number of gears depending on the total points \n");
     /* AYTAN ADD CODE HERE */
+    for (uint32_t pulse = 2000; pulse < 5500; pulse += 200) {  
+        PWMOperate_SetPulseWidthOnChannel(pulse, 3);
+
+        delay_ms(1000);      
+    }
+    
+    PWMOperate_SetPulseWidthOnChannel(2000, 3);      
     }
     break;
 
@@ -206,7 +213,7 @@ uint32_t random_angle_to_pulsewidth()
 
 void delay_ms(uint32_t ms)
 {
-    for (uint32_t i = 0; i < ms * 4000; i++) {}
+    for (uint32_t i = 0; i < ms * 1000; i++) {}
 }
 
 /*------------------------------- Footnotes -------------------------------*/

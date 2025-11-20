@@ -17,7 +17,7 @@
  When           Who     What/Why
  -------------- ---     --------
  08/06/13 13:36 jec     initial version
-****************************************************************************/
+ ****************************************************************************/
 
 // this will pull in the symbolic definitions for events, which we will want
 // to post in response to detecting events
@@ -49,6 +49,7 @@ uint32_t ConstSound = 511; //512;
 // included in the module. It is only here as a sample to guide you in writing
 // your own event checkers
 #if 0
+
 /****************************************************************************
  Function
    Check4Lock
@@ -62,31 +63,30 @@ uint32_t ConstSound = 511; //512;
    will not compile, sample only
  Author
    J. Edward Carryer, 08/06/13, 13:48
-****************************************************************************/
-bool Check4Lock(void)
-{
-  static uint8_t  LastPinState = 0;
-  uint8_t         CurrentPinState;
-  bool            ReturnVal = false;
+ ****************************************************************************/
+bool Check4Lock(void) {
+    static uint8_t LastPinState = 0;
+    uint8_t CurrentPinState;
+    bool ReturnVal = false;
 
-  CurrentPinState = LOCK_PIN;
-  // check for pin high AND different from last time
-  // do the check for difference first so that you don't bother with a test
-  // of a port/variable that is not going to matter, since it hasn't changed
-  if ((CurrentPinState != LastPinState) &&
-      (CurrentPinState == LOCK_PIN_HI)) // event detected, so post detected event
-  {
-    ES_Event ThisEvent;
-    ThisEvent.EventType   = ES_LOCK;
-    ThisEvent.EventParam  = 1;
-    // this could be any of the service post functions, ES_PostListx or
-    // ES_PostAll functions
-    ES_PostAll(ThisEvent);
-    ReturnVal = true;
-  }
-  LastPinState = CurrentPinState; // update the state for next time
+    CurrentPinState = LOCK_PIN;
+    // check for pin high AND different from last time
+    // do the check for difference first so that you don't bother with a test
+    // of a port/variable that is not going to matter, since it hasn't changed
+    if ((CurrentPinState != LastPinState) &&
+            (CurrentPinState == LOCK_PIN_HI)) // event detected, so post detected event
+    {
+        ES_Event ThisEvent;
+        ThisEvent.EventType = ES_LOCK;
+        ThisEvent.EventParam = 1;
+        // this could be any of the service post functions, ES_PostListx or
+        // ES_PostAll functions
+        ES_PostAll(ThisEvent);
+        ReturnVal = true;
+    }
+    LastPinState = CurrentPinState; // update the state for next time
 
-  return ReturnVal;
+    return ReturnVal;
 }
 
 #endif
@@ -110,88 +110,95 @@ bool Check4Lock(void)
    do not internally keep track of the last keystroke that we retrieved.
  Author
    J. Edward Carryer, 08/06/13, 13:48
-****************************************************************************/
-bool Check4Keystroke(void)
-{
-  if (IsNewKeyReady())   // new key waiting?
-  {
-    ES_Event_t ThisEvent;
-    ThisEvent.EventType   = ES_NEW_KEY;
-    ThisEvent.EventParam  = GetNewKey();
-    ES_PostAll(ThisEvent);
-    return true;
-  }
-  return false;
+ ****************************************************************************/
+bool Check4Keystroke(void) {
+    if (IsNewKeyReady()) // new key waiting?
+    {
+        ES_Event_t ThisEvent;
+        ThisEvent.EventType = ES_NEW_KEY;
+        ThisEvent.EventParam = GetNewKey();
+        ES_PostAll(ThisEvent);
+        return true;
+    }
+    return false;
 }
 
-bool Check4PowerUp(void) 
-{
-    bool ReturnVal = false; 
+bool Check4PowerUp(void) {
+    bool ReturnVal = false;
     ES_Event_t ThisEvent;
     uint32_t CurrentPowerUpState = PORTAbits.RA3;
-    uint32_t LastPowerUpState = 0; 
+    uint32_t LastPowerUpState = 0;
     uint16_t InitTime = ES_Timer_GetTime();
-    
+
+    static uint16_t LastTime = 0;
+    uint16_t NowTime = ES_Timer_GetTime();
+
     if (CurrentPowerUpState == 0) {
-        for (int i=0; i < 100; i++){} // delay bounce
-        if (PORTAbits.RA3 == 1){
+        if ((NowTime - LastTime) > 50) {
+            if (PORTAbits.RA3 == 1) {
                 ThisEvent.EventType = ES_POWER_UP;
                 ThisEvent.EventParam = PORTAbits.RA3;
-                PostGhostHuntFSM(ThisEvent); 
+                PostGhostHuntFSM(ThisEvent);
                 ReturnVal = true;
+            }
         }
     }
-    CurrentPowerUpState = LastPowerUpState; 
+    CurrentPowerUpState = LastPowerUpState;
     return ReturnVal;
 }
 
-bool Check4Shot(void)
-{
-    bool ReturnVal = false; 
-    ES_Event_t ThisEvent; 
+bool Check4Shot(void) {
+    bool ReturnVal = false;
+    ES_Event_t ThisEvent;
     uint32_t CurrentShotState = PORTBbits.RB2;
-    uint32_t LastShotState = 0; 
-    if(CurrentShotState == 0){
+    uint32_t LastShotState = 0;
+
+    static uint16_t LastTime = 0;
+    uint16_t NowTime = ES_Timer_GetTime();
+
+
+    if (CurrentShotState == 0) {
         PWMOperate_SetDutyOnChannel(50, 4);
-        for (int i=0; i < 100; i++){} // delay bounce
-        if (PORTBbits.RB2 == 1){
-            PWMOperate_SetDutyOnChannel(0, 4); 
-            ThisEvent.EventType = ES_SHOT;
-            ThisEvent.EventParam = PORTBbits.RB2;
-            PostGhostHuntFSM(ThisEvent);
-            ReturnVal = true;
+        if ((NowTime - LastTime) > 50) {
+            if (PORTBbits.RB2 == 1) {
+                PWMOperate_SetDutyOnChannel(0, 4);
+                ThisEvent.EventType = ES_SHOT;
+                ThisEvent.EventParam = PORTBbits.RB2;
+                PostGhostHuntFSM(ThisEvent);
+                ReturnVal = true;
+            }
         }
     }
-    CurrentShotState = LastShotState; 
+    CurrentShotState = LastShotState;
     return ReturnVal;
 }
 
-bool Check4Sound(void)
-{
-    bool ReturnVal = false; 
-    ES_Event_t ThisEvent; 
-    static uint16_t LastTime = 0; 
+bool Check4Sound(void) {
+    bool ReturnVal = false;
+    ES_Event_t ThisEvent;
+    static uint16_t LastTime = 0;
     uint16_t NowTime = ES_Timer_GetTime();
-    
-//    if (NowTime - LastTime > 100)
-    
-//    ADC_ConfigAutoScan(BIT13HI);
+
+    //    if (NowTime - LastTime > 100)
+
+    //    ADC_ConfigAutoScan(BIT13HI);
     uint32_t ConversionResults[1];
     ADC_MultiRead(ConversionResults);
 
-   
-    uint32_t CurrentSound = ConversionResults[0];
-    
-    if((CurrentSound) > 600 && (NowTime- LastTime) > 100){
-        float SendVal = CurrentSound/100;
-        SendVal = (int)SendVal;
 
-        ThisEvent.EventType = ES_SOUND; 
-        ThisEvent.EventParam = SendVal; 
+    uint32_t CurrentSound = ConversionResults[0];
+
+    if ((CurrentSound) > 600 && (NowTime - LastTime) > 500) {
+        float SendVal = CurrentSound / 100;
+        SendVal = (int) SendVal;
+
+        ThisEvent.EventType = ES_SOUND;
+        ThisEvent.EventParam = SendVal;
         PostGhostHuntFSM(ThisEvent);
         ReturnVal = true;
         LastTime = NowTime;
-//        for (int i=0; i < 100000; i++){} // delay bounce
+        //        for (int i=0; i < 100000; i++){} // delay bounce
     }
-    return ReturnVal; 
+    return ReturnVal;
 }
+

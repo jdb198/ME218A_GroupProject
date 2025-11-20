@@ -162,7 +162,7 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
         DB_printf("Timer started \n");
         ES_Timer_InitTimer(SERVICE1_TIMER, FIVE_SEC);
         DB_printf("Servo Timer Started \n");
-        ES_Timer_InitTimer(SERVICE0_TIMER, TEN_SEC); // change this to 60
+        ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC); // change this to 60
         PostDisplayService(ThisEvent);
   
     }
@@ -306,19 +306,29 @@ void InitMicrophone(void)
   
 void InitServos(void)
 {
+    /* initialize servos for controlling ghost */
     TRISBbits.TRISB3 = 0;
     LATBbits.LATB3 = 1;
     TRISBbits.TRISB8 = 0;
     LATBbits.LATB8 = 1; 
     
-    PWMSetup_BasicConfig(2);
+    /* initialize servo for gear dispenser */
+    TRISBbits.TRISB10 = 0;
+    LATBbits.LATB10 = 1;
+    
+    /* configure servos for controlling ghost */
+    PWMSetup_BasicConfig(4);        // servos use channels 1 and 2, IR emitter uses channel 4
     PWMSetup_MapChannelToOutputPin(1, PWM_RPB3);
     PWMSetup_MapChannelToOutputPin(2, PWM_RPB8);
     PWMSetup_AssignChannelToTimer(1, _Timer2_);
     PWMSetup_AssignChannelToTimer(2, _Timer2_);
+    
+    /* configure servo for dispensing gears */
+    PWMSetup_MapChannelToOutputPin(3, PWM_RPB10);
+    PWMSetup_AssignChannelToTimer(3, _Timer2_); 
+    
     PWMSetup_SetFreqOnTimer(50, _Timer2_);  // 50 Hz servo frequency
-//    PWMOperate_SetDutyOnChannel(50, 1);
-//    PWMOperate_SetDutyOnChannel(50, 2);
+
     DB_printf("Servos initialized \n");
 }
 

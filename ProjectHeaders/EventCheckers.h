@@ -25,6 +25,7 @@ bool Check4Keystroke(void);
 bool Check4PowerUp(void);
 bool Check4Shot(void);
 bool Check4Sound(void);
+bool Check4Hit(void);
 
 
 #endif /* EventCheckers_H */

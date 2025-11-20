@@ -62,8 +62,7 @@ bool InitSoundService(uint8_t Priority) {
 
     MyPriority = Priority;
 
-    TRISBbits.TRISB9 = 0; // make RB9 an output
-    LATBbits.LATB9 = 1;
+
     TRISBbits.TRISB5 = 0;
     LATBbits.LATB5 = 1;
 

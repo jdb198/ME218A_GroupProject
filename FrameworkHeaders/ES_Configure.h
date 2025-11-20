@@ -278,7 +278,8 @@ typedef enum
   ES_TIMEOUT_SERVOS, 
   ES_SHOT,
   ES_LED_CHAR,
-  ES_UPDATE_DISPLAY, 
+  ES_UPDATE_DISPLAY,
+  ES_HIT,
   ES_UPDATE_ROW      
 }ES_EventType_t;
 
@@ -314,7 +315,7 @@ typedef enum
 
 /****************************************************************************/
 // This is the list of event checking functions
-#define EVENT_CHECK_LIST Check4Keystroke,Check4PowerUp,Check4Shot,Check4Sound 
+#define EVENT_CHECK_LIST Check4Keystroke,Check4PowerUp,Check4Sound, Check4Shot
 
 
 /****************************************************************************/
