@@ -64,8 +64,11 @@ bool InitSoundService(uint8_t Priority) {
 
 
     TRISBbits.TRISB5 = 0;
+     TRISBbits.TRISB9 = 0;
+      
     LATBbits.LATB5 = 1;
-
+     LATBbits.LATB9 = 0;
+//DB_printf("INIT HAPPENNNNNNNNNNNNNNNN \n");
     /********************************************
      in here you write your initialization code
      *******************************************/
@@ -124,17 +127,30 @@ ES_Event_t RunSoundService(ES_Event_t ThisEvent) {
 
     ES_Event_t ReturnEvent;
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
+    
+    
+    
+    
+    
     if (ThisEvent.EventType == ES_GHOST_JERK) {
         LATBbits.LATB5 = 0;
+        LATBbits.LATB9 = 0;
         static uint16_t LastTime = 0;
         DB_printf("The ghost made a scary sound \n");
+        
         uint16_t NowTime = ES_Timer_GetTime();
 
-        if ((NowTime - LastTime) > 100) {
+        if ((NowTime - LastTime) > 1000) {
+            //  DB_printf("Theeeeeeeeeeeeeeeeeeeeeeee \n");
             LATBbits.LATB5 = 1;
+         //   LATBbits.LATB9 = 0;
             LastTime = NowTime;
         }
-
+//         if ((uint16_t)(NowTime - LastTime) > 100 && LATBbits.LATB5 == 0) {
+//        LATBbits.LATB5 = 1;      // release trigger
+//    }
+////       
+//
     }
 
 
