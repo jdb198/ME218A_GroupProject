@@ -162,7 +162,7 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
         DB_printf("Timer started \n");
         ES_Timer_InitTimer(SERVICE1_TIMER, FIVE_SEC);
         DB_printf("Servo Timer Started \n");
-        ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC); // change this to 60
+        ES_Timer_InitTimer(SERVICE0_TIMER, TEN_SEC); // change this to 60
         PostDisplayService(ThisEvent);
   
     }
@@ -202,8 +202,10 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent)
     {
             // ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC);
         if (ThisEvent.EventParam == SERVICE0_TIMER){
+            
                 ThisEvent.EventType = ES_GAME_OVER;
                 PostDisplayService(ThisEvent); 
+                PostMoveServosService(ThisEvent);
 //                PostPointsService(ThisEvent);
                 // DB_printf("GameOver \n");}
         } else if (ThisEvent.EventParam == SERVICE1_TIMER){

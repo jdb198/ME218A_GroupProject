@@ -168,7 +168,7 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
     
     case ES_GAME_OVER:        // If current state is state one
     {
-//        DB_printf("Dispense the total number of gears depending on the total points \n");
+        DB_printf("Dispense the total number of gears depending on the total points \n");
     /* AYTAN ADD CODE HERE */
     for (uint32_t pulse = 2000; pulse < 5500; pulse += 200) {  
         PWMOperate_SetPulseWidthOnChannel(pulse, 3);
