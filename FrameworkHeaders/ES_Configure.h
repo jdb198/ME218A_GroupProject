@@ -337,8 +337,8 @@ typedef enum
 #define TIMER9_RESP_FUNC TIMER_UNUSED
 #define TIMER10_RESP_FUNC TIMER_UNUSED
 #define TIMER11_RESP_FUNC TIMER_UNUSED
-#define TIMER12_RESP_FUNC TIMER_UNUSED
-#define TIMER13_RESP_FUNC TIMER_UNUSED
+#define TIMER12_RESP_FUNC PostSoundService
+#define TIMER13_RESP_FUNC PostGhostHuntFSM
 #define TIMER14_RESP_FUNC PostGhostHuntFSM //PostTestHarnessService0
 #define TIMER15_RESP_FUNC PostGhostHuntFSM
 
@@ -352,6 +352,8 @@ typedef enum
 //#define SERVICE0_TIMER 14
 #define SERVICE0_TIMER 15 
 #define SERVICE1_TIMER 14
+#define SERVICE2_TIMER 13
+#define SERVICE3_TIMER 12
 
 
 

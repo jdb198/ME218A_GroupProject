@@ -127,9 +127,10 @@ ES_Event_t RunPointsService(ES_Event_t ThisEvent) {
         }
         DB_printf("Total Points %d \n", TotalPoints);
 
-        if (TotalPoints >= 50) {
+        if (TotalPoints >= 100) {
             ThisEvent.EventType = ES_GAME_OVER;
             PostDisplayService(ThisEvent);
+            PostMoveServosService(ThisEvent);
 
         } else {
             ThisEvent.EventType = ES_POINT_DISPLAY;
@@ -170,6 +171,11 @@ ES_Event_t RunPointsService(ES_Event_t ThisEvent) {
         ThisEvent.EventType = ES_POINT_DISPLAY;
         ThisEvent.EventParam = TotalPoints;
         PostDisplayService(ThisEvent);
+        
+    } else if ( ThisEvent.EventType == ES_GAME_OVER) {
+        ThisEvent.EventParam = TotalPoints; 
+        ThisEvent.EventType = ES_GAME_OVER; 
+        PostMoveServosService(ThisEvent);
     }
 
     return ReturnEvent;

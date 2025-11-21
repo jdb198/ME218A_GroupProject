@@ -44,6 +44,8 @@
 
 /* Constants */
 uint32_t ConstSound = 511; //512;
+#define ONE_SEC 1000
+#define TWENTY_SEC (ONE_SEC * 20)
 
 // This is the event checking function sample. It is not intended to be
 // included in the module. It is only here as a sample to guide you in writing
@@ -139,6 +141,7 @@ bool Check4PowerUp(void) {
                 ThisEvent.EventType = ES_POWER_UP;
                 ThisEvent.EventParam = PORTAbits.RA3;
                 PostGhostHuntFSM(ThisEvent);
+                ES_Timer_InitTimer(SERVICE2_TIMER, TWENTY_SEC);
                 ReturnVal = true;
             }
         }
@@ -165,6 +168,7 @@ bool Check4Shot(void) {
                 ThisEvent.EventType = ES_SHOT;
                 ThisEvent.EventParam = PORTBbits.RB2;
                 PostGhostHuntFSM(ThisEvent);
+                ES_Timer_InitTimer(SERVICE2_TIMER, TWENTY_SEC);
                 ReturnVal = true;
             }
         }
@@ -197,6 +201,7 @@ bool Check4Sound(void) {
         PostGhostHuntFSM(ThisEvent);
         ReturnVal = true;
         LastTime = NowTime;
+        ES_Timer_InitTimer(SERVICE2_TIMER, TWENTY_SEC);
         //        for (int i=0; i < 100000; i++){} // delay bounce
     }
     return ReturnVal;

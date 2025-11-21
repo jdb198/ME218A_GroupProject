@@ -168,11 +168,22 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
     
     case ES_GAME_OVER:        // If current state is state one
     {
-        DB_printf("Dispense the total number of gears depending on the total points \n");
-    /* AYTAN ADD CODE HERE */
+        int gearmove = 0; 
+        DB_printf("The total points are %d \n", ThisEvent.EventParam);
+        if (ThisEvent.EventParam < 33){
+            gearmove = 2300; 
+        } else if (ThisEvent.EventParam > 66){
+            gearmove = 2500;
+        }else {
+            gearmove = 2700;
+        }
+//        PWMOperate_SetPulseWidthOnChannel(gearmove, 3);
+//        delay_ms(1000);  
+//        PWMOperate_SetPulseWidthOnChannel(2000, 3);
+        
+//    /* AYTAN ADD CODE HERE */
     for (uint32_t pulse = 2000; pulse < 5500; pulse += 200) {  
         PWMOperate_SetPulseWidthOnChannel(pulse, 3);
-
         delay_ms(1000);      
     }
     

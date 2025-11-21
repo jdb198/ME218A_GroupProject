@@ -24,6 +24,14 @@
 #include "ES_Framework.h"
 #include "SoundService.h"
 
+#define ONE_SEC 1000
+#define HALF_SEC (ONE_SEC / 2)
+#define TWO_SEC (ONE_SEC * 2)
+#define FIVE_SEC (ONE_SEC * 5)
+#define TEN_SEC (ONE_SEC * 10)
+#define TWENTY_SEC (ONE_SEC * 20)
+#define SIXTY_SEC (ONE_SEC * 60)
+
 
 
 /*----------------------------- Module Defines ----------------------------*/
@@ -137,20 +145,13 @@ ES_Event_t RunSoundService(ES_Event_t ThisEvent) {
         LATBbits.LATB9 = 0;
         static uint16_t LastTime = 0;
         DB_printf("The ghost made a scary sound \n");
+        ES_Timer_InitTimer(SERVICE3_TIMER, TWO_SEC);
+        LATBbits.LATB5 = 0;
         
         uint16_t NowTime = ES_Timer_GetTime();
 
-        if ((NowTime - LastTime) > 1000) {
-            //  DB_printf("Theeeeeeeeeeeeeeeeeeeeeeee \n");
-            LATBbits.LATB5 = 1;
-         //   LATBbits.LATB9 = 0;
-            LastTime = NowTime;
-        }
-//         if ((uint16_t)(NowTime - LastTime) > 100 && LATBbits.LATB5 == 0) {
-//        LATBbits.LATB5 = 1;      // release trigger
-//    }
-////       
-//
+    } else if (ThisEvent.EventParam  == SERVICE3_TIMER){
+        LATBbits.LATB5 = 1;
     }
 
 

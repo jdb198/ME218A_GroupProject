@@ -127,6 +127,7 @@ ES_Event_t RunDisplayService(ES_Event_t ThisEvent) {
             ThisEvent.EventParam = welcome[i]; // 
             PostLEDService(ThisEvent);
         }
+        DB_printf("Welcome \n");
     }
 
     else if (ThisEvent.EventType == ES_POINT_DISPLAY) {
@@ -144,11 +145,14 @@ ES_Event_t RunDisplayService(ES_Event_t ThisEvent) {
       
         static const char gameover[] = "GAMEOVER";
 //        DM_ClearDisplayBuffer(); 
+        DB_printf("GAMEOVER \n");
         for (int i = 0; i < strlen(gameover); i++) {
             ThisEvent.EventType = ES_LED_CHAR;
             ThisEvent.EventParam = gameover[i]; // 
             PostLEDService(ThisEvent);
         }
+//        ThisEvent.EventType = ES_WELCOME_DISPLAY;
+//        PostDisplayService(ThisEvent);
 
         //return ReturnEvent;
     }

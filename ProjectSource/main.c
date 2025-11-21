@@ -39,7 +39,7 @@ void main(void)
   SPISetup_MapSSOutput(SPI_SPI1, SPI_RPA0); 
   SPISetup_MapSDOutput(SPI_SPI1, SPI_RPA1);
   SPISetEnhancedBuffer(SPI_SPI1, 1);
-  SPISetup_SetBitTime(SPI_SPI1, 10000);
+  SPISetup_SetBitTime(SPI_SPI1, 40000);
   SPISetup_SetActiveEdge(SPI_SPI1, SPI_CLK_LO); 
   SPISetup_SetClockIdleState(SPI_SPI1, SPI_CLK_HI);// changed from high
   SPISetup_SetXferWidth(SPI_SPI1, SPI_16BIT);
