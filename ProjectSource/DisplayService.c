@@ -113,48 +113,33 @@ bool PostDisplayService(ES_Event_t ThisEvent) {
 ES_Event_t RunDisplayService(ES_Event_t ThisEvent) {
     ES_Event_t ReturnEvent;
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
-//    if (ThisEvent.EventType == ES_INIT){
-//          while (false == DM_TakeInitDisplayStep()){}
-//
-//    }
-    if (ThisEvent.EventType == ES_WELCOME_DISPLAY) {
-        
-        static const char welcome[] = "WELCOME";
 
-        for (int i = 0; i < strlen(welcome); i++) {
-          
+    if (ThisEvent.EventType == ES_WELCOME_DISPLAY) {
+        static const char welcome[] = "WELCOME";
+        for (int i = 0; i < strlen(welcome); i++) { 
             ThisEvent.EventType = ES_LED_CHAR;
             ThisEvent.EventParam = welcome[i]; // 
             PostLEDService(ThisEvent);
         }
         DB_printf("Welcome \n");
     }
-
     else if (ThisEvent.EventType == ES_POINT_DISPLAY) {
-
         char NumAsStr[] = "    0000   ";
         snprintf(NumAsStr, sizeof(NumAsStr)-1, "    %d   ", ThisEvent.EventParam);
-//        DM_ClearDisplayBuffer();
         for (int i = 0; i <strlen(NumAsStr); i++){
             ThisEvent.EventType = ES_LED_CHAR;
             ThisEvent.EventParam = NumAsStr[i]; // 
             PostLEDService(ThisEvent);
         }
-
     } else if (ThisEvent.EventType == ES_GAME_OVER) {
-      
-        static const char gameover[] = "GAMEOVER";
-//        DM_ClearDisplayBuffer(); 
+        static const char gameover[] = "GAMEOVER"; 
         DB_printf("GAMEOVER \n");
         for (int i = 0; i < strlen(gameover); i++) {
             ThisEvent.EventType = ES_LED_CHAR;
             ThisEvent.EventParam = gameover[i]; // 
             PostLEDService(ThisEvent);
         }
-//        ThisEvent.EventType = ES_WELCOME_DISPLAY;
-//        PostDisplayService(ThisEvent);
 
-        //return ReturnEvent;
     }
 return ReturnEvent;
 

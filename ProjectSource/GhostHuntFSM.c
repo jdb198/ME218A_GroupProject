@@ -89,7 +89,6 @@ bool InitGhostHuntFSM(uint8_t Priority) {
 
     InitServos();
     InitShootButton();
-    //  InitIREmitter(); 
     InitPowerUpButton();
     InitIRReciever();
     InitMicrophone();
@@ -149,43 +148,34 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent) {
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
 
     switch (ThisEvent.EventType) {
-        case ES_INIT: // If current state is initial Psedudo State
+        case ES_INIT: 
         {
-            //        DB_printf("WELCOME \n");
-            //        DB_printf("You are waiting for an input \n");
             ThisEvent.EventType = ES_WELCOME_DISPLAY;
-//            DB_printf("Timer started \n");
             ES_Timer_InitTimer(SERVICE1_TIMER, TWO_SEC);
-//            DB_printf("Servo Timer Started \n");
-            ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC); // change this to 60
+            ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC); 
             PostDisplayService(ThisEvent);
             ES_Timer_InitTimer(SERVICE2_TIMER, TWENTY_SEC);
-
         }
             break;
 
-        case ES_POWER_UP: // If current state is state one
+        case ES_POWER_UP:
         {
-            DB_printf("You hit the Power up Button \n");
             ThisEvent.EventType = ES_CHECK_FOR_POWER_UP;
             PostPointsService(ES_CHECK_FOR_POWER_UP);
             break;
-
         }
             break;
 
         case ES_SHOT: // If someone presses the shoot button 
         {
-            DB_printf("You took a shot \n");
             ThisEvent.EventType = ES_SHOT_FIRED;
             PostShotFiredService(ThisEvent);
             break;
         }
             break;
 
-        case ES_SOUND: // If current state is state one
+        case ES_SOUND: 
         {
-            // DB_printf("The current voltage is  %d \n", ThisEvent.EventParam);
             ThisEvent.EventType = ES_GHOST_JERK;
             PostMoveServosService(ThisEvent);
             PostPointsService(ThisEvent);
@@ -194,40 +184,31 @@ ES_Event_t RunGhostHuntFSM(ES_Event_t ThisEvent) {
         }
             break;
 
-        case ES_TIMEOUT: // If current state is state one
+        case ES_TIMEOUT: 
         {
-            // ES_Timer_InitTimer(SERVICE0_TIMER, SIXTY_SEC);
             if (ThisEvent.EventParam == SERVICE0_TIMER) {
-
                 ThisEvent.EventType = ES_GAME_OVER;
                 PostDisplayService(ThisEvent);
-//                PostPointsService(ThisEvent);
                 PostMoveServosService(ThisEvent);
-                
-                // DB_printf("GameOver \n");}
             } else if (ThisEvent.EventParam == SERVICE1_TIMER) {
                 ES_Timer_InitTimer(SERVICE1_TIMER, TWO_SEC);
                 ThisEvent.EventType = ES_GHOST_TIMER;
                 PostMoveServosService(ThisEvent);
-                //            DB_printf("5 second timer \n");
             } else if (ThisEvent.EventParam == SERVICE2_TIMER) {
                 DB_printf("You have stopped playing. Shame \n");
                 ThisEvent.EventType = ES_GAME_OVER;
                 PostDisplayService(ThisEvent);
-//                PostPointsService(ThisEvent);
             }
             break;
         }
             break;
 
-            // repeat state pattern as required for other states
         default:
         {
         }
             break;
     }
-    //  CurrentState = NextState;
-    // end switch on Current State
+
     return ReturnEvent;
 }
 
@@ -271,37 +252,18 @@ void InitShootButton(void) {
     PWMSetup_MapChannelToOutputPin(4, PWM_RPA2);
     PWMSetup_AssignChannelToTimer(4, _Timer3_);
     PWMSetup_SetFreqOnTimer(4750, _Timer3_); // Timer 3 is multiplied by 8 vs what the library is set to
-
-//    DB_printf("Shoot button initialized \n");
 }
 
 void InitIRReciever(void) {
     //set up IR Receiver 
     TRISAbits.TRISA4 = 1; // make RA4 a digital input (IR receiver)
     uint32_t LastIRReceived = PORTAbits.RA4;
-//    DB_printf("IR receiver initialized \n");
-
 }
 
-//void InitIREmitter(void)
-//{
-//      // set up IR Emitter
-//
-//  TRISAbits.TRISA2 = 0; // set as input 
-//  
-//  uint32_t LastIREmitted = PORTAbits.RA2;
-////  DB_printf("IR Emitter initialized \n");
-//  
-//}
-
 void InitMicrophone(void) {
-
     TRISBbits.TRISB13 = 1; // make RB13 an input (microphone)
     ANSELBbits.ANSB13 = 1; // make RB13 an analog input
     ADC_ConfigAutoScan(BIT11HI);
-
-//    DB_printf("Mic initialized \n");
-
 }
 
 void InitServos(void) {
@@ -327,8 +289,6 @@ void InitServos(void) {
     PWMSetup_AssignChannelToTimer(3, _Timer2_);
 
     PWMSetup_SetFreqOnTimer(50, _Timer2_); // 50 Hz servo frequency
-
-    DB_printf("Servos initialized \n");
 }
 
 

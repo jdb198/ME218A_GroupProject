@@ -130,8 +130,6 @@ bool Check4PowerUp(void) {
     ES_Event_t ThisEvent;
     uint32_t CurrentPowerUpState = PORTAbits.RA3;
     uint32_t LastPowerUpState = 0;
-    uint16_t InitTime = ES_Timer_GetTime();
-
     static uint16_t LastTime = 0;
     uint16_t NowTime = ES_Timer_GetTime();
 
@@ -155,10 +153,8 @@ bool Check4Shot(void) {
     ES_Event_t ThisEvent;
     uint32_t CurrentShotState = PORTBbits.RB2;
     uint32_t LastShotState = 0;
-
     static uint16_t LastTime = 0;
     uint16_t NowTime = ES_Timer_GetTime();
-
 
     if (CurrentShotState == 0) {
         PWMOperate_SetDutyOnChannel(50, 4);
@@ -183,9 +179,6 @@ bool Check4Sound(void) {
     static uint16_t LastTime = 0;
     uint16_t NowTime = ES_Timer_GetTime();
 
-    //    if (NowTime - LastTime > 100)
-
-    //    ADC_ConfigAutoScan(BIT13HI);
     uint32_t ConversionResults[1];
     ADC_MultiRead(ConversionResults);
 

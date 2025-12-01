@@ -129,7 +129,7 @@ ES_Event_t RunLEDService(ES_Event_t ThisEvent) {
         case LED_Idle:
         {
             switch (ThisEvent.EventType) {
-                case ES_LED_CHAR: // If current state is initial Psedudo State
+                case ES_LED_CHAR: 
                 {
                     DM_ScrollDisplayBuffer(4);
                     DM_AddChar2DisplayBuffer(ThisEvent.EventParam);

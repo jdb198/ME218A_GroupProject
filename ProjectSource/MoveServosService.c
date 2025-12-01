@@ -143,22 +143,17 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
 
     case ES_GHOST_JERK:        // If current state is state one
     {
-//        DB_printf("The ghost has moved out of fright \n");
         int32_t down_ticks = 1750;
         PWMOperate_SetPulseWidthOnChannel(down_ticks, 1);
         PWMOperate_SetPulseWidthOnChannel(down_ticks, 2);
-    /* AYTAN ADD CODE HERE */
-
     }
     break;
     
     case ES_GHOST_TIMER:        // If current state is state one
     {
 //        DB_printf("The ghost has moved after 5 seconds \n");
-      
         uint32_t pulse1 = random_angle_to_pulsewidth();
         uint32_t pulse2 = random_angle_to_pulsewidth();
-
         PWMOperate_SetPulseWidthOnChannel(pulse1, 1);
         PWMOperate_SetPulseWidthOnChannel(pulse2, 2);
 //        DB_printf("Pulse 1 %d Pulse 2 %d \n", pulse1, pulse2);
@@ -168,30 +163,16 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
     
     case ES_GAME_OVER:        // If current state is state one
     {
-        int gearmove = 0; 
-        DB_printf("The total points are %d \n", ThisEvent.EventParam);
-        if (ThisEvent.EventParam < 33){
-            gearmove = 2300; 
-        } else if (ThisEvent.EventParam > 66){
-            gearmove = 2500;
-        }else {
-            gearmove = 2700;
-        }
-//        PWMOperate_SetPulseWidthOnChannel(gearmove, 3);
-//        delay_ms(1000);  
-//        PWMOperate_SetPulseWidthOnChannel(2000, 3);
-        
-//    /* AYTAN ADD CODE HERE */
-    for (uint32_t pulse = 2000; pulse < 5500; pulse += 200) {  
-        PWMOperate_SetPulseWidthOnChannel(pulse, 3);
-        delay_ms(1000);      
+      // DB_printf("The total points are %d \n", ThisEvent.EventParam);
+      for (uint32_t pulse = 2000; pulse < 5500; pulse += 200) {  
+          PWMOperate_SetPulseWidthOnChannel(pulse, 3);
+          delay_ms(1000);      
     }
     
     PWMOperate_SetPulseWidthOnChannel(2000, 3);      
     }
     break;
 
-    // repeat state pattern as required for other states
      default:
     {}
      break;
@@ -204,9 +185,6 @@ ES_Event_t RunMoveServosService(ES_Event_t ThisEvent)
  private functions
  ***************************************************************************/
 
-
-
-
 uint32_t random_angle_to_pulsewidth()
 {
    // delay_ms();
@@ -215,8 +193,8 @@ uint32_t random_angle_to_pulsewidth()
     // Desired pulse in microseconds
     uint32_t pulse_us = 700 + ((angle * (2400 - 700)) / 180);
 
-    // Convert µs -> timer ticks: TICS_PER_MS = 2500 ticks/ms
-    // 1 ms = 1000 µs, so ticks = pulse_us * 2500 / 1000
+    // Convert ï¿½s -> timer ticks: TICS_PER_MS = 2500 ticks/ms
+    // 1 ms = 1000 ï¿½s, so ticks = pulse_us * 2500 / 1000
     uint32_t pulse_ticks = (pulse_us * TICS_PER_MS) / 1000;
 
     return pulse_ticks;

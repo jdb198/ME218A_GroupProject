@@ -69,13 +69,8 @@ bool InitSoundService(uint8_t Priority) {
     ES_Event_t ThisEvent;
 
     MyPriority = Priority;
-
-
     TRISBbits.TRISB5 = 0;
-     TRISBbits.TRISB9 = 0;
-      
     LATBbits.LATB5 = 1;
-     LATBbits.LATB9 = 0;
 //DB_printf("INIT HAPPENNNNNNNNNNNNNNNN \n");
     /********************************************
      in here you write your initialization code
@@ -128,34 +123,17 @@ bool PostSoundService(ES_Event_t ThisEvent) {
    J. Edward Carryer, 01/15/12, 15:23
  ****************************************************************************/
 ES_Event_t RunSoundService(ES_Event_t ThisEvent) {
-
-
-
-
-
     ES_Event_t ReturnEvent;
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
     
-    
-    
-    
-    
     if (ThisEvent.EventType == ES_GHOST_JERK) {
         LATBbits.LATB5 = 0;
-        LATBbits.LATB9 = 0;
-        static uint16_t LastTime = 0;
         DB_printf("The ghost made a scary sound \n");
         ES_Timer_InitTimer(SERVICE3_TIMER, TWO_SEC);
-        LATBbits.LATB5 = 0;
-        
-        uint16_t NowTime = ES_Timer_GetTime();
 
     } else if (ThisEvent.EventParam  == SERVICE3_TIMER){
         LATBbits.LATB5 = 1;
     }
-
-
-
     /********************************************
      in here you write your service code
      *******************************************/
